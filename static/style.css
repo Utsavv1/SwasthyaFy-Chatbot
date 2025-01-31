@@ -1,0 +1,136 @@
+/* Overall page background (optional) */
+body {
+    font-family: 'Arial', sans-serif;
+    background: url("chat-bg.jpg") no-repeat center center fixed;
+    background-size: cover;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+/* Chat Container Styling */
+.chat-container {
+    max-width: 1200px;
+    margin: 30px auto;
+    background: rgb(201,168,185);
+    background: linear-gradient(90deg, rgba(201,168,185,1) 0%, rgba(82,110,184,0.9023984593837535) 35%, rgba(116,209,205,0.8295693277310925) 100%);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Chat Box Background (Change this for chat area) */
+.chat-box {
+    background: #8dc2f567; /* Light blue background */
+    padding: 15px;
+    height: 550px;
+    overflow-y: auto;
+    border-radius: 8px;
+    border: 1px solid #ffffff;
+}
+
+/* Chat Logo Styling for User and Bot */
+.chat-logo {
+    font-size: 25px; /* Adjust the size of the user/bot icon */
+    margin-right: 10px; /* Adjust space between icon and text */
+    vertical-align: middle; /* Align the icons properly with the text */
+}
+
+/* User Message (Right Side) */
+.user-message {
+    background: #f5f5f5; /* Blue background for user */
+    color: rgb(3, 2, 2);
+    display: flex;
+    align-items: center; /* Align logo and text in one line */
+    margin-left: auto;
+    text-align: right;
+    padding: 10px;
+    border-radius: 10px;
+    max-width: max-content;
+    margin-top:30px;
+}
+
+/* Bot Message (Left Side) */
+.bot-message {
+    background: #f1f0f0; /* Light gray background for bot */
+    color: black;
+    display: flex;
+    align-items: center; /* Align logo and text in one line */
+    margin-right: auto;
+    text-align: left;
+    padding: 10px;
+    border-radius: 10px;
+    max-width: max-content;
+    margin-top:30px;
+
+}
+
+/* Ensure the icon stays next to the message */
+.bot-message .chat-logo, .user-message .chat-logo {
+    margin-right: 10px; /* Space between icon and message */
+}
+
+
+/* Input Box and Button */
+#chat-form {
+    display: flex;
+    margin-top: 10px;
+}
+
+#user_input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ffffff;
+}
+
+button {
+    background: #0084ff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left:15px;
+}
+button:hover {
+    background: #005bb5;
+}
+
+h1 {
+    font-size: 28px; /* Increase text size */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* Space between icon and text */
+    color: #ffffff; /* Blue color */
+}
+
+h1 i {
+    font-size: 35px; /* Make the icon larger */
+    animation-duration: 2s; /* Control beat-fade speed */
+}
+
+button {
+    background: #0084ff; /* Blue button background */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 50%; /* Make it circular */
+    cursor: pointer;
+    font-size: 18px;
+    transition: background 0.3s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+}
+
+button i {
+    color: white; 
+}
+
+button:hover {
+    background: #005bb5; 
+}
