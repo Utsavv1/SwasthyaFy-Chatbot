@@ -14,8 +14,6 @@
         <h2>
             Your Personal Health Assistant, Powered by AI.
         </h2>
-
-        <!-- Display Submitted Name and Age -->
         {% if name and age %}
             <div class="submitted-info">
                 <p><strong>Name:</strong> {{ name }}</p>
@@ -24,22 +22,15 @@
         {% endif %}
 
         <form id="userForm" method="post">
-            <!-- Name Field -->
             <div class="input-group">
                 <input type="text" id="name" name="name" placeholder="Enter your name" required>
             </div>
-
-            <!-- Email Field -->
             <div class="input-group">
                 <input type="email" id="email" name="email" placeholder="Enter your email" required>
             </div>
-
-            <!-- Age Field -->
             <div class="input-group">
                 <input type="number" id="age" name="age" placeholder="Enter your age" required>
             </div>
-
-            <!-- Gender Field -->
             <div class="input-group">
                 <select id="gender" name="gender" required>
                     <option value="" disabled selected>Select Gender</option>

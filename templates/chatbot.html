@@ -10,46 +10,58 @@
 </head>
 <body>
     <div class="chat-container">
-        <!-- Header Section -->
         <header>
             <h1>
                 <i class="fa-solid fa-stethoscope fa-beat-fade" style="color: #74C0FC;"></i> Healthcare AI Assistant
             </h1>
             <p>Welcome, {{ user_info.name }}! You are {{ user_info.age }} years old and identify as {{ user_info.gender }}.</p>
         </header>
-
-        <!-- Chat Box -->
         <div class="chat-box" id="chat-box">
             {% for message in chat_history %}
                 <div class="{{ 'user-message' if message.role == 'user' else 'bot-message' }}">
-                    <!-- Display User Icon -->
                     {% if message.role == 'user' %}
                         <i class="fa-solid fa-user chat-logo" style="color: #2a58a8;"></i>
                     {% else %}
-                        <!-- Display Bot Icon -->
                         <i class="fa-solid fa-user-nurse chat-logo" style="color: #2a58a8;"></i>
                     {% endif %}
                     <p>{{ message.content | safe }}</p>
                 </div>
             {% endfor %}
         </div>
-
-        <!-- Input Form -->
         <form id="chat-form" method="post">
             <input type="text" name="user_input" id="user_input" placeholder="Describe your symptoms..." required>
             <button type="submit">
                 <i class="fa-sharp fa-solid fa-paper-plane"></i>
             </button>
         </form>
-
-        <!-- Buttons Container -->
         <div class="buttons-container">
-            <!-- Go Back Button -->
             <a href="{{ url_for('index') }}" id="go-back-button">← Go Back</a>
-            
-            <!-- Clear Chat Button -->
-            <button id="clear-chat">Clear Chat</button>
+        <button id="clear-chat-btn">Clear Chat</button>
+
+        <script>
+        document.getElementById("clear-chat-btn").addEventListener("click", function () {
+            fetch("/clear-chat", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert("Failed to clear chat: " + data.error);
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("An error occurred while clearing the chat.");
+            });
+        });
+        </script>
         </div>
     </div>
 </body>
 </html>
+
