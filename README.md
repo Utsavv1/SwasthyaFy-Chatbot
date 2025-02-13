@@ -11,11 +11,17 @@ Personalized User Data : Displays user information (name, age, email, gender) an
 Responsive Design : Clean and modern UI with a responsive layout.
 Session Management : Maintains user-specific data using Flask sessions.
 Error Handling : Gracefully handles missing or invalid inputs.
+
 Technologies Used
 Backend : Python, Flask
+
 AI Model : Google Gemini API (gemini-1.5-flash)
+
 Frontend : HTML, CSS, Jinja2 Templates
+
 Dependencies :
 google-generativeai: For interacting with the Gemini API.
+
 Flask: For building the web application.
+
 Jinja2: For rendering dynamic templates.
