@@ -13,23 +13,37 @@ Session Management : Maintains user-specific data using Flask sessions.
 Error Handling : Gracefully handles missing or invalid inputs.
 Technologies Used
 Backend : Python, Flask
+
 AI Model : Google Gemini API (gemini-1.5-flash)
+
 Frontend : HTML, CSS, Jinja2 Templates
+
 Dependencies :
 google-generativeai: For interacting with the Gemini API.
+
 Flask: For building the web application.
+
 Jinja2: For rendering dynamic templates.
+
 Setup Instructions
 Prerequisites
 Python : Ensure Python 3.8 or higher is installed.
+
 python --version
+
 Google Gemini API Key :
 Sign up for the Google AI Studio and generate an API key.
+
 Install Dependencies :
 Install the required Python libraries using pip:pip install flask google-generativeai
+
 Steps to Run the Application
 Clone the Repository :git clone https://github.com/yourusername/gemini-healthcare-chatbot.git
+
 cd gemini-healthcare-chatbot
+
 GOOGLE_API_KEY=your_api_key_here
+
 Run the Flask Application :python app.py
+
 Access the Application :Open your browser and navigate to:
