@@ -1,36 +1,65 @@
-document.getElementById("chat-form").addEventListener("submit", function(event) {
-    event.preventDefault();  // Prevent page reload
+document.addEventListener("DOMContentLoaded", function () {
+    // Get all input fields with placeholders
+    const inputs = document.querySelectorAll(".input-group input");
+    inputs.forEach(input => {
+        // When the user starts typing, hide the placeholder
+        input.addEventListener("input", function () {
+            if (input.value.trim() !== "") {
+                input.setAttribute("data-placeholder-hidden", "true");
+            } else {
+                input.removeAttribute("data-placeholder-hidden");
+            }
+        });
 
-    let userInputField = document.getElementById("user_input");
-    let userInput = userInputField.value.trim();
-    
-    if (userInput === "") return;  // Prevent empty messages
+        // Restore placeholder when the input loses focus and is empty
+        input.addEventListener("blur", function () {
+            if (input.value.trim() === "") {
+                input.removeAttribute("data-placeholder-hidden");
+            }
+        });
+    });
 
-    let chatBox = document.getElementById("chat-box");
+    // Scroll to the bottom of the chat box
+    function scrollToBottom() {
+        const chatBox = document.getElementById('chat-box');
+        if (chatBox) {
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    }
 
-    // Display user message
-    let userMessage = document.createElement("div");
-    userMessage.className = "user-message";
-    userMessage.textContent = userInput;
-    chatBox.appendChild(userMessage);
+    // Scroll to bottom when the page loads
+    scrollToBottom();
 
-    // Clear the input field immediately
-    userInputField.value = "";
-    userInputField.focus();
+    // Scroll to bottom after submitting a message
+    const chatForm = document.getElementById('chat-form');
+    if (chatForm) {
+        chatForm.addEventListener('submit', function () {
+            setTimeout(scrollToBottom, 100); // Delay to allow message rendering
+        });
+    }
 
-    // Send input to Flask server
-    fetch("/", {
-        method: "POST",
-        body: new URLSearchParams({ user_input: userInput }),
-        headers: { "Content-Type": "application/x-www-form-urlencoded" }
-    })
-    .then(response => response.text())
-    .then(data => {
-        let parser = new DOMParser();
-        let doc = parser.parseFromString(data, "text/html");
-        let newChatBox = doc.getElementById("chat-box").innerHTML;
-
-        chatBox.innerHTML = newChatBox;
-        chatBox.scrollTop = chatBox.scrollHeight;  // Auto-scroll to bottom
+    // Clear Chat Button Logic
+    const clearChatButton = document.getElementById('clear-chat');
+    if (clearChatButton) {
+        clearChatButton.addEventListener('click', function () {
+            if (confirm("Are you sure you want to clear your chat history?")) {
+                fetch('/clear-chat', { method: 'POST' })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            location.reload(); // Reload the page to reflect the cleared chat
+                        } else {
+                            alert(`Error clearing chat: ${data.error}`);
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                        alert("An unexpected error occurred while clearing the chat.");
+                    });
+            }
+        });
+    }
+    document.getElementById('go-back-button').addEventListener('click', function () {
+        window.location.href = "{{ url_for('index') }}";
     });
 });

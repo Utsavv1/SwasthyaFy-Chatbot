@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare AI Chatbot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <div class="chat-container">
+        <!-- Header Section -->
+        <header>
+            <h1>
+                <i class="fa-solid fa-stethoscope fa-beat-fade" style="color: #74C0FC;"></i> Healthcare AI Assistant
+            </h1>
+            <p>Welcome, {{ user_info.name }}! You are {{ user_info.age }} years old and identify as {{ user_info.gender }}.</p>
+        </header>
+
+        <!-- Chat Box -->
+        <div class="chat-box" id="chat-box">
+            {% for message in chat_history %}
+                <div class="{{ 'user-message' if message.role == 'user' else 'bot-message' }}">
+                    <!-- Display User Icon -->
+                    {% if message.role == 'user' %}
+                        <i class="fa-solid fa-user chat-logo" style="color: #2a58a8;"></i>
+                    {% else %}
+                        <!-- Display Bot Icon -->
+                        <i class="fa-solid fa-user-nurse chat-logo" style="color: #2a58a8;"></i>
+                    {% endif %}
+                    <p>{{ message.content | safe }}</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Input Form -->
+        <form id="chat-form" method="post">
+            <input type="text" name="user_input" id="user_input" placeholder="Describe your symptoms..." required>
+            <button type="submit">
+                <i class="fa-sharp fa-solid fa-paper-plane"></i>
+            </button>
+        </form>
+
+        <!-- Buttons Container -->
+        <div class="buttons-container">
+            <!-- Go Back Button -->
+            <a href="{{ url_for('index') }}" id="go-back-button">← Go Back</a>
+            
+            <!-- Clear Chat Button -->
+            <button id="clear-chat">Clear Chat</button>
+        </div>
+    </div>
+</body>
+</html>

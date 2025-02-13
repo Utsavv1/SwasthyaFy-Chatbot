@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session,jsonify
 import google.generativeai as genai
 
 # Configure Gemini API
@@ -12,7 +12,6 @@ generation_config = {
     "max_output_tokens": 8192,
     "response_mime_type": "text/plain",
 }
-
 model = genai.GenerativeModel(
     model_name="gemini-1.5-flash",
     generation_config=generation_config,
@@ -24,17 +23,16 @@ chat_session = model.start_chat(
         {
             "role": "user",
             "parts": [
-                "first you want to ask the user's name ,user's age and their gender",
-                "You are a healthcare chatbot. Ask 5 questions related to the symptoms but one by one the user provides and predict potential diseases. ",
-                "you want give list of 3 related disease like first disease after that in new line second disease and after that in new line third disease that symptoms the user was provided.",
-                "aslo give the description of that disease",
+                "You are a healthcare chatbot. Ask 6 question related the first answer but ask one question at a time and in the end provide probable disease.",
+                "You want to give a list of 3 related diseases like: first disease, then in a new line second disease, and then in a new line third disease based on the symptoms the user provides.",
+                "Also, give the description of those diseases.",
             ],
         },
         {
             "role": "model",
             "parts": [
-                "Okay, I'm ready to help. Please tell me about your symptoms. After you describe them, I'll ask some clarifying questions.  \n\n"
-                "**Important Disclaimer:** I am an AI chatbot and cannot provide medical diagnoses. My purpose is to offer information and potential possibilities based on your input. "
+                "Okay, I'm ready to help. Please tell me about your symptoms. After you describe them, I'll ask some clarifying questions one by one. after that provide list of that 3 disease not in same line \n\n"
+                "**Important Disclaimer:** I am an AI chatbot and cannot provide medical diagnoses. My purpose is to offer information and potential possibilities based on your input."
                 "Always consult with a doctor or other qualified healthcare professional for any health concerns. Do not delay seeking medical advice because of something you read here.",
             ],
         },
@@ -42,42 +40,78 @@ chat_session = model.start_chat(
 )
 
 app = Flask(__name__)
+app.secret_key = "AIzaSyBFcVdWmupoYN_u6yH4lykcdx6qymaiXLY"  # Required for session management
 
-# Initialize chat history in session
-chat_history = []
-
+# Route for the user information page
 @app.route("/", methods=["GET", "POST"])
-def home():
-    global chat_history
-    
+def index():
+    if request.method == "POST":
+        # Get user information from the form
+        name = request.form.get("name")
+        email = request.form.get("email")  # Get email from the form
+        age = request.form.get("age")
+        gender = request.form.get("gender")
+
+        # Store user information in the session
+        session["user_info"] = {
+            "name": name,
+            "email": email,  # Add email to session
+            "age": age,
+            "gender": gender
+        }
+
+        # Initialize chat history for the user if not already present
+        if "chat_history" not in session:
+            session["chat_history"] = []
+
+        # Redirect to the chatbot page
+        return redirect(url_for("chatbot"))
+
+    return render_template("index.html")
+
+# Route for the chatbot page
+@app.route("/chatbot", methods=["GET", "POST"])
+def chatbot():
+    # Retrieve user information from the session
+    user_info = session.get("user_info", {})
+    if not user_info:
+        return redirect(url_for("index"))  # Redirect to the user info page if no user data exists
+
+    # Retrieve chat history from the session
+    chat_history = session.get("chat_history", [])
+
     if request.method == "POST":
         # Get user input
-        user_input = request.form.get("user_input")
-        if user_input:
-            # Add user message to chat history
-            chat_history.append({"role": "user", "content": user_input})
+        user_input = request.form.get("user_input").strip().lower()  # Normalize input
 
-            # Check if the user input is a greeting
-            greeting_keywords = ["hi", "hello", "hey", "hola", "greetings"]
-            if any(greeting in user_input.lower() for greeting in greeting_keywords):
-                chatbot_response = "Hello! How can I assist you today? Please describe your symptoms."
-                chat_history.append({"role": "model", "content": chatbot_response})
+        # Check for greeting keywords
+        greeting_keywords = ["hello", "hi", "hey", "hola", "greetings"]
+        if any(greeting in user_input for greeting in greeting_keywords):
+            bot_response = "Hello! How can I assist you today?"
+        else:
+            # Simulate bot response (replace with actual AI logic)
+            bot_response = f"You said: {user_input}. Here's my response."
 
-            else:
-                # Process as a symptom-related question if not a greeting
-                response = chat_session.send_message(user_input)
-                
-                # Safely extract the text from the response
-                chatbot_response = ""
-                if hasattr(response, '_result') and len(response._result.candidates) > 0:
-                    candidate = response._result.candidates[0]
-                    parts = candidate.content.parts if hasattr(candidate.content, 'parts') else []
-                    if parts:
-                        chatbot_response = parts[0].text if hasattr(parts[0], 'text') else "No valid response found"
+        # Add user message to chat history
+        chat_history.append({"role": "user", "content": user_input})
+        session["chat_history"] = chat_history  # Save updated chat history to session
 
-                chat_history.append({"role": "model", "content": chatbot_response})
-        
-    return render_template("index.html", chat_history=chat_history)
+        # Add bot response to chat history
+        chat_history.append({"role": "model", "content": bot_response})
+        session["chat_history"] = chat_history  # Save updated chat history to session
+
+    return render_template("chatbot.html", user_info=user_info, chat_history=chat_history)
+
+# Route to clear chat history
+@app.route("/clear-chat", methods=["POST"])
+def clear_chat():
+    try:
+        # Clear chat history from the session
+        session.pop("chat_history", None)
+        return jsonify({"success": True})  # Return a JSON response
+    except Exception as e:
+        # Handle unexpected errors gracefully
+        return jsonify({"success": False, "error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(debug=True)

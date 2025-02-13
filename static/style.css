@@ -1,136 +1,246 @@
-/* Overall page background (optional) */
+/* General Body Styling */
 body {
-    font-family: 'Arial', sans-serif;
-    background: url("chat-bg.jpg") no-repeat center center fixed;
-    background-size: cover;
+    font-family: Arial, sans-serif;
+    background : rgba(196, 190, 190, 0.671); /* Light background color */
     margin: 0;
-    padding: 0;
+    padding: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Container Styling */
+.container {
+    width: 600px;
+    background-color: #A9C9FF;
+    background-image: linear-gradient( 89.5deg,  rgba(221, 211, 211, 0.767) 0.4%, rgba(221, 209, 209, 0.5) 100.3% );
+    border-radius: 12px; /* Rounded corners */
+    box-shadow: 0 20px 25px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    overflow: hidden;
+    padding: 30px;
+}
+
+/* Heading Styling */
+h1 {
     text-align: center;
+    margin-bottom: 25px;
+    color: #0a0a2c; /* Dark gray for contrast */
+    font-size: 40px;
 }
 
-/* Chat Container Styling */
-.chat-container {
-    max-width: 1200px;
-    margin: 30px auto;
-    background: rgb(201,168,185);
-    background: linear-gradient(90deg, rgba(201,168,185,1) 0%, rgba(82,110,184,0.9023984593837535) 35%, rgba(116,209,205,0.8295693277310925) 100%);
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #000000; /* Dark gray for contrast */
+    font-size: 18px;
 }
 
-/* Chat Box Background (Change this for chat area) */
-.chat-box {
-    background: #8dc2f567; /* Light blue background */
+p {
+    text-align :left;
+    margin-bottom: 15px;
+    color: #000000; /* Dark gray for contrast */
+    font-size: 15px;
+    font-weight: bold;
+}
+
+
+/* Submitted Info Styling */
+.submitted-info {
+    margin-bottom: 20px;
     padding: 15px;
-    height: 550px;
+    background-color: #f9f9f9; /* Light gray background */
+    border: 1px solid #e0e0e0; /* Light border */
+    border-radius: 8px; /* Rounded corners */
+}
+
+.submitted-info p {
+    margin: 5px 0;
+    font-size: 16px;
+    color: #5eabeb; /* Dark gray text */
+}
+
+/* Form Styling */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Input Group Styling */
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+/* Input and Select Styling */
+.input-group input, 
+.input-group select {
+    width: 98%; /* Default full width */
+    height: 50px; /* Default height */
+    padding: 1px; /* Consistent padding */
+    border: 2px solid #e0e0e0; /* Light border */
+    border-radius: 8px; /* Rounded corners */
+    font-size: 16px;
+    outline: none; /* Remove default focus outline */
+    transition: border-color 0.3s ease; /* Smooth border color transition */
+}
+
+/* Focus State for Inputs and Select */
+.input-group input:focus,
+.input-group select:focus {
+    border-color: #74C0FC; /* Blue border on focus */
+}
+
+/* Placeholder Styling */
+.input-group input::placeholder {
+    color: #aaa; /* Light gray for placeholder */
+    transition: opacity 0.3s ease;
+}
+
+
+/* Button Styling */
+button {
+    background-color: #750b0bb6; /* Blue button */
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px; /* Rounded corners */
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+}
+
+button:hover {
+    background-color: #001d4b; /* Darker blue on hover */
+}
+
+/* Chat Container */
+.chat-container {
+    width: 500px;
+    background-image: linear-gradient( 89.5deg,rgba(255, 255, 255, 0.767) 0.4%, rgba(255, 255, 255, 0.692) 100.3% );
+    border-radius: 12px; /* Rounded corners */
+    box-shadow: 0 20px 25px rgba(0.1, 0, 0, 0.1); /* Subtle shadow for depth */
+    overflow: hidden;
+    padding: 20px;
+}
+/* Header Styling */
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    font-size: 1.5em;
+    color: #000000;
+    margin-bottom: 10px;
+}
+
+header p {
+    text-align: center;
+    font-size: 14px;
+    color: #000000;
+}
+
+/* Chat Box Styling */
+.chat-box {
+    height: 300px;
     overflow-y: auto;
+    padding: 10px;
+    border: 1px solid #000000;
     border-radius: 8px;
-    border: 1px solid #ffffff;
+    margin-bottom: 15px;
 }
 
-/* Chat Logo Styling for User and Bot */
-.chat-logo {
-    font-size: 25px; /* Adjust the size of the user/bot icon */
-    margin-right: 10px; /* Adjust space between icon and text */
-    vertical-align: middle; /* Align the icons properly with the text */
+.user-message, .bot-message {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 10px;
 }
 
-/* User Message (Right Side) */
 .user-message {
-    background: #f5f5f5; /* Blue background for user */
-    color: rgb(3, 2, 2);
-    display: flex;
-    align-items: center; /* Align logo and text in one line */
-    margin-left: auto;
-    text-align: right;
-    padding: 10px;
-    border-radius: 10px;
-    max-width: max-content;
-    margin-top:30px;
+    justify-content: flex-end;
 }
 
-/* Bot Message (Left Side) */
 .bot-message {
-    background: #f1f0f0; /* Light gray background for bot */
-    color: black;
-    display: flex;
-    align-items: center; /* Align logo and text in one line */
-    margin-right: auto;
-    text-align: left;
+    justify-content: flex-start;
+}
+
+.chat-logo {
+    font-size: 24px;
+    margin-right: 10px;
+}
+
+.user-message p, .bot-message p {
+    max-width: 70%;
     padding: 10px;
-    border-radius: 10px;
-    max-width: max-content;
-    margin-top:30px;
-
+    border-radius: 8px;
+    font-size: 14px;
 }
 
-/* Ensure the icon stays next to the message */
-.bot-message .chat-logo, .user-message .chat-logo {
-    margin-right: 10px; /* Space between icon and message */
+.user-message p {
+    background-color: #a82a2a;
+    color: white;
 }
 
+.bot-message p {
+    background-color: #4399ee;
+    color: rgb(255, 255, 255);
+}
 
-/* Input Box and Button */
+/* Input Form Styling */
 #chat-form {
     display: flex;
-    margin-top: 10px;
+    gap: 10px;
 }
 
 #user_input {
     flex: 1;
     padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
 }
 
-button {
-    background: #0084ff;
+/* Buttons Container Styling */
+.buttons-container {
+    display: flex; /* Use Flexbox for horizontal alignment */
+    justify-content: flex-end; /* Align buttons to the right */
+    gap: 10px; /* Add spacing between the buttons */
+    margin-top: 15px; /* Add some space above the buttons */
+}
+
+/* Go Back Button Styling */
+#go-back-button {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #750b0bb6; /* Blue color */
     color: white;
     border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
+    border-radius: 4px;
     cursor: pointer;
-    margin-left:15px;
-}
-button:hover {
-    background: #005bb5;
-}
-
-h1 {
-    font-size: 28px; /* Increase text size */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px; /* Space between icon and text */
-    color: #ffffff; /* Blue color */
+    font-size: 16px;
+    text-decoration: none; /* Remove underline from the link */
+    transition: background-color 0.3s ease;
 }
 
-h1 i {
-    font-size: 35px; /* Make the icon larger */
-    animation-duration: 2s; /* Control beat-fade speed */
+#go-back-button:hover {
+    background-color: #08162c; /* Darker blue on hover */
 }
 
-button {
-    background: #0084ff; /* Blue button background */
+/* Clear Chat Button Styling */
+#clear-chat {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #750b0bb6; /* Red color for clear action */
     color: white;
     border: none;
-    padding: 10px 15px;
-    border-radius: 50%; /* Make it circular */
+    border-radius: 4px;
     cursor: pointer;
-    font-size: 18px;
-    transition: background 0.3s ease-in-out;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 45px;
-    height: 45px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    width: auto; /* Adjust width to fit content */
 }
 
-button i {
-    color: white; 
-}
-
-button:hover {
-    background: #005bb5; 
+#clear-chat:hover {
+    background-color: #0b0a35; /* Darker red on hover */
 }

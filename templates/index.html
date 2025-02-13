@@ -3,43 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Healthcare AI Chatbot</title>
+    <title>User Information</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script src="{{ url_for('static', filename='script.js') }}" defer></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
-    <div class="chat-container">
-        <header>
-            <h1>
-                <i class="fa-solid fa-stethoscope fa-beat-fade" style="color: #74C0FC;"></i> Healthcare AI Assistant
-            </h1>            
-        </header>
-        
-        <div class="chat-box" id="chat-box">
-            {% for message in chat_history %}
-                <div class="{{ 'user-message' if message.role == 'user' else 'bot-message' }}">
-                    <!-- Display User Icon -->
-                    {% if message.role == 'user' %}
-                        <i class="fa-solid fa-user chat-logo" style="color: #2a58a8;"></i>
-                    {% else %}
-                        <!-- Display Bot Icon -->
-                        <i class="fa-solid fa-user-nurse chat-logo" style="color: #2a58a8;"></i>
-                    {% endif %}
-                    <p>{{ message.content }}</p>
-                </div>
-            {% endfor %}
-        </div>
+    <div class="container">
+        <h1>Welcome To HealthCare Chat</h1>
 
-        <form id="chat-form" method="post">
-            <input type="text" name="user_input" id="user_input" placeholder="Describe your symptoms..." required>
-            <button type="submit">
-                <i class="fa-sharp fa-solid fa-paper-plane fa-bounce"></i>
-            </button>
-        </form>        
+        <h2>
+            Your Personal Health Assistant, Powered by AI.
+        </h2>
+
+        <!-- Display Submitted Name and Age -->
+        {% if name and age %}
+            <div class="submitted-info">
+                <p><strong>Name:</strong> {{ name }}</p>
+                <p><strong>Age:</strong> {{ age }}</p>
+            </div>
+        {% endif %}
+
+        <form id="userForm" method="post">
+            <!-- Name Field -->
+            <div class="input-group">
+                <input type="text" id="name" name="name" placeholder="Enter your name" required>
+            </div>
+
+            <!-- Email Field -->
+            <div class="input-group">
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            </div>
+
+            <!-- Age Field -->
+            <div class="input-group">
+                <input type="number" id="age" name="age" placeholder="Enter your age" required>
+            </div>
+
+            <!-- Gender Field -->
+            <div class="input-group">
+                <select id="gender" name="gender" required>
+                    <option value="" disabled selected>Select Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <button type="submit">Submit</button>
+
+            <p>
+                While our chatbot provides helpful insights and guidance, it is not a substitute for professional medical advice, diagnosis, or treatment. Always consult a qualified healthcare provider for any health concerns.
+            </p>
+        </form>
     </div>
 </body>
 </html>
