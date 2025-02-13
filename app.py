@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session,jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 import google.generativeai as genai
 
 # Configure Gemini API
@@ -17,28 +17,6 @@ model = genai.GenerativeModel(
     generation_config=generation_config,
 )
 
-# Start the chat session with an initial system message
-chat_session = model.start_chat(
-    history=[
-        {
-            "role": "user",
-            "parts": [
-                "You are a healthcare chatbot. Ask 6 question related the first answer but ask one question at a time and in the end provide probable disease.",
-                "You want to give a list of 3 related diseases like: first disease, then in a new line second disease, and then in a new line third disease based on the symptoms the user provides.",
-                "Also, give the description of those diseases.",
-            ],
-        },
-        {
-            "role": "model",
-            "parts": [
-                "Okay, I'm ready to help. Please tell me about your symptoms. After you describe them, I'll ask some clarifying questions one by one. after that provide list of that 3 disease not in same line \n\n"
-                "**Important Disclaimer:** I am an AI chatbot and cannot provide medical diagnoses. My purpose is to offer information and potential possibilities based on your input."
-                "Always consult with a doctor or other qualified healthcare professional for any health concerns. Do not delay seeking medical advice because of something you read here.",
-            ],
-        },
-    ]
-)
-
 app = Flask(__name__)
 app.secret_key = "AIzaSyBFcVdWmupoYN_u6yH4lykcdx6qymaiXLY"  # Required for session management
 
@@ -52,21 +30,21 @@ def index():
         age = request.form.get("age")
         gender = request.form.get("gender")
 
-        # Store user information in the session
-        session["user_info"] = {
-            "name": name,
-            "email": email,  # Add email to session
-            "age": age,
-            "gender": gender
-        }
-
-        # Initialize chat history for the user if not already present
-        if "chat_history" not in session:
-            session["chat_history"] = []
+        # Check if the user is new or returning
+        current_user = {"name": name, "email": email, "age": age, "gender": gender}
+        if "user_info" in session:
+            # If the user info in the session doesn't match the current user, start a new chat
+            if session["user_info"] != current_user:
+                session.clear()  # Clear session for the new user
+                session["user_info"] = current_user
+                session["chat_history"] = []  # Start a new chat history
+        else:
+            # Initialize session for the new user
+            session["user_info"] = current_user
+            session["chat_history"] = []  # Start a new chat history
 
         # Redirect to the chatbot page
         return redirect(url_for("chatbot"))
-
     return render_template("index.html")
 
 # Route for the chatbot page
@@ -84,17 +62,30 @@ def chatbot():
         # Get user input
         user_input = request.form.get("user_input").strip().lower()  # Normalize input
 
-        # Check for greeting keywords
-        greeting_keywords = ["hello", "hi", "hey", "hola", "greetings"]
-        if any(greeting in user_input for greeting in greeting_keywords):
-            bot_response = "Hello! How can I assist you today?"
-        else:
-            # Simulate bot response (replace with actual AI logic)
-            bot_response = f"You said: {user_input}. Here's my response."
-
         # Add user message to chat history
         chat_history.append({"role": "user", "content": user_input})
         session["chat_history"] = chat_history  # Save updated chat history to session
+
+        # Count the number of questions asked so far
+        question_count = sum(1 for msg in chat_history if msg["role"] == "model" and "?" in msg["content"])
+
+        # Generate bot response
+        try:
+            if question_count < 6:
+                # Ask the next question
+                prompt = f"Ask the next clarifying question about the user's symptoms. So far, the user has said: {', '.join([msg['content'] for msg in chat_history if msg['role'] == 'user'])}."
+                response = model.generate_content(prompt)
+                bot_response = response.text.strip()
+            else:
+                # Provide a list of probable diseases and descriptions
+                prompt = (
+                    f"Based on the user's symptoms ({', '.join([msg['content'] for msg in chat_history if msg['role'] == 'user'])}), "
+                    "provide a list of 3 probable diseases, describe each disease on a new line with their number, along with their descriptions."
+                )
+                response = model.generate_content(prompt)
+                bot_response = response.text.strip()
+        except Exception as e:
+            bot_response = f"Sorry, I encountered an error: {str(e)}"
 
         # Add bot response to chat history
         chat_history.append({"role": "model", "content": bot_response})
