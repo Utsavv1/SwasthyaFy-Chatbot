@@ -35,7 +35,8 @@ Google Gemini API Key :
 Sign up for the Google AI Studio and generate an API key.
 
 Install Dependencies :
-Install the required Python libraries using pip:pip install flask google-generativeai
+Install the required Python libraries using pip:
+pip install flask google-generativeai
 
 Steps to Run the Application
 Clone the Repository :git clone https://github.com/yourusername/gemini-healthcare-chatbot.git
