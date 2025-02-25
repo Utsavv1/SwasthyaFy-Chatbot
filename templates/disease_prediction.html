@@ -9,7 +9,7 @@
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f9f9; 
+            background-color: #d0dbdace; 
             display: flex;
             justify-content: center;
             align-items: center;
@@ -32,7 +32,6 @@
         .section {
             margin-bottom: 20px;
         }
-
         .section-title {
             font-weight: bold;
             margin-bottom: 10px;
@@ -42,7 +41,6 @@
             list-style: none;
             padding: 0;
         }
-
         .info-list li {
             margin-bottom: 5px;
             color: #444444; 
@@ -66,15 +64,26 @@
             border-radius: 6px;
             transition: background-color 0.3s ease;
         }
-
         .return-button:hover {
-            background-color: #0056b3;
+            background-color: #001d4b;
+        }
+        button {
+            background-color: #007bff; /* Blue button */
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px; /* Rounded corners */
+            cursor: pointer;
+            font-size: 15px;
+            transition: background-color 0.3s ease; /* Smooth hover effect */
+        }
+        button:hover {
+            background-color: #001d4b; /* Darker blue on hover */
         }
     </style>
 </head>
 <body>
-
-    <div class="container">
+    <div class="container" id="contentToDownload">
         <h1>Predicted Diseases</h1>
         <div class="section">
             <div class="section-title">User Information</div>
@@ -85,21 +94,46 @@
                 <li><strong>Gender:</strong> {{ user_info.gender }}</li>
             </ul>
         </div>
-        <!-- <div class="section">
-            <div class="section-title">User Responses</div>
-            <ul class="info-list">
-                {% for response in user_responses %}
-                    <li>{{ response }}</li>
-                {% endfor %}
-            </ul>
-        </div> -->
         <div class="section">
             <div class="section-title">Predicted Diseases</div>
             <div class="disease-list">
                 {{ predicted_diseases }}
             </div>
         </div>
+        <button type="button" id="downloadButton">Download Report</button>
         <a href="/" class="return-button">Return to Home</a>
     </div>
+
+    <!-- Include the jsPDF and html2pdf.js libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+        // Add an event listener to the "Download Report" button
+        document.getElementById('downloadButton').addEventListener('click', function () {
+            // Select the content to download
+            const content = document.getElementById('contentToDownload');
+
+            // Hide the buttons before generating the PDF
+            const downloadButton = document.getElementById('downloadButton');
+            const returnButton = document.querySelector('.return-button');
+            downloadButton.style.display = 'none';
+            returnButton.style.display = 'none';
+
+            // Options for the PDF generation
+            const options = {
+                margin: 10, // Margin around the content
+                filename: 'full_page_report.pdf', // Name of the downloaded file
+                html2canvas: { scale: 2 }, // Scale factor for better resolution
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } // PDF settings
+            };
+
+            // Generate the PDF using html2pdf.js
+            html2pdf().set(options).from(content).save().then(() => {
+                // Restore the buttons after the PDF is generated
+                downloadButton.style.display = 'inline-block';
+                returnButton.style.display = 'inline-block';
+            });
+        });
+    </script>
 </body>
 </html>
