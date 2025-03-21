@@ -1,67 +1,276 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Healthcare AI Chatbot</title>
+    <title>Swasthyafy AI </title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script src="{{ url_for('static', filename='script.js') }}" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        /* General styling for the chat container */
+        .chat-container {
+            width: 900px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            /* Full viewport height */
+            background-color: #f9f9f9;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Header styling */
+        header {
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 24px;
+            margin: 0;
+        }
+
+        header p {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* Chat box styling */
+        .chat-box {
+            flex-grow: 1;
+            /* Takes up remaining space */
+            overflow-y: auto;
+            /* Enables scrolling if content overflows */
+            padding: 20px;
+            border-bottom: 1px solid #ddd;
+            background-color: #ffffff;
+        }
+
+        /* Chat messages */
+        .user-message,
+        .bot-message {
+            display: flex;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .user-message {
+            justify-content: flex-end;
+        }
+
+        .bot-message {
+            justify-content: flex-start;
+        }
+
+        .chat-logo {
+            margin: 0 10px;
+            font-size: 25px;
+        }
+
+        .chat-box p {
+            max-width: 70%;
+            padding: 10px 15px;
+            border-radius: 15px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .user-message p {
+            text-align: left;
+            background-color: #007bff;
+            color: white;
+        }
+
+        .bot-message p {
+            text-align: left;
+            background-color: #e9ecef;
+            color: #333;
+        }
+
+        .user-message .chat-logo {
+            order: 2;
+        }
+
+        .bot-message .chat-logo {
+            order: 0;
+            /* Place logo before the message */
+        }
+
+        /* Input form styling */
+        #chat-form {
+            display: flex;
+            flex-direction: row;
+            /* Stack input and button vertically */
+            padding: 10px;
+            background-color: #ffffff;
+            box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #chat-form input {
+            width: 90%;
+            /* Full width */
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 14px;
+            margin-bottom: 10px;
+            /* Space between input and button */
+        }
+
+        #chat-form button {
+            height: 39px;
+            width: 5%;
+            /* Full width */
+            padding: 10px;
+            margin-right: 3px;
+            margin-left: 3px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            /* Slightly rounded corners */
+            cursor: pointer;
+            font-size: 16px;
+            text-align: center;
+            /* Center the icon */
+        }
+
+        #chat-form button:hover {
+            background-color: #050e38;
+        }
+    </style>
 </head>
+
 <body>
     <div class="chat-container">
         <header>
             <h1>
-                <i class="fa-solid fa-stethoscope fa-beat-fade" style="color: #74C0FC;"></i> Healthcare AI Assistant
+                <i class="fa-solid fa-stethoscope fa-beat-fade" style="color: #000000;"></i> SwasthyaFy AI Assistant
             </h1>
-            <p>Welcome, {{ user_info.name }}! You are {{ user_info.age }} years old and identify as {{ user_info.gender }}.</p>
+            <p>Welcome, {{ user_info.name }}! You are {{ user_info.age }} years old and identify as {{ user_info.gender
+                }}.</p>
         </header>
         <div class="chat-box" id="chat-box">
             {% for message in chat_history %}
-                <div class="{{ 'user-message' if message.role == 'user' else 'bot-message' }}">
-                    {% if message.role == 'user' %}
-                        <i class="fa-solid fa-user chat-logo" style="color: #2a58a8;"></i>
-                    {% else %}
-                        <i class="fa-solid fa-user-nurse chat-logo" style="color: #2a58a8;"></i>
-                    {% endif %}
-                    <p>{{ message.content | safe }}</p>
-                </div>
+            <div class="{{ 'user-message' if message.role == 'user' else 'bot-message' }}">
+                {% if message.role == 'user' %}
+                <i class="fa-solid fa-user chat-logo" style="color: #2a58a8;"></i>
+                {% else %}
+                <i class="fa-solid fa-user-nurse chat-logo" style="color: #2a58a8;"></i>
+                {% endif %}
+                <p>{{ message.content | safe }}</p>
+            </div>
             {% endfor %}
         </div>
         <form id="chat-form" method="post">
             <input type="text" name="user_input" id="user_input" placeholder="Describe your symptoms..." required>
             <button type="submit">
                 <i class="fa-sharp fa-solid fa-paper-plane"></i>
-            </button>
-        </form>
-        <div class="buttons-container">
-            <a href="{{ url_for('index') }}" id="go-back-button">← Go Back</a>
-        <button id="clear-chat-btn">Clear Chat</button>
-
-        <script>
-        document.getElementById("clear-chat-btn").addEventListener("click", function () {
-            fetch("/clear-chat", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    location.reload();
-                } else {
-                    alert("Failed to clear chat: " + data.error);
-                }
-            })
-            .catch(error => {
-                console.error("Error:", error);
-                alert("An error occurred while clearing the chat.");
-            });
-        });
-        </script>
-        </div>
+                <button type="button" id="mic-button">
+                    <i class="fa-solid fa-microphone" style="color: #ffffff;"></i>
+                </button>
     </div>
 </body>
+
 </html>
 
+<script>
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const micButton = document.getElementById("mic-button");
+        const userInput = document.getElementById("user_input");
+        const chatBox = document.getElementById("chat-box");
+
+        // Check if the browser supports Web Speech API
+        if (!("webkitSpeechRecognition" in window)) {
+            alert("Your browser does not support the Web Speech API. Please use Chrome or another supported browser.");
+            micButton.disabled = true;
+            return;
+        }
+
+        // Initialize the SpeechRecognition object
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.lang = "en-US";
+
+        let isListening = false;
+
+        // Handle microphone button click
+        micButton.addEventListener("click", () => {
+            if (isListening) {
+                recognition.stop();
+                micButton.style.backgroundColor = "#007bff";
+                isListening = false;
+            } else {
+                recognition.start();
+                micButton.style.backgroundColor = "#ff4d4d";
+                isListening = true;
+            }
+        });
+
+        // Handle speech recognition results
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            userInput.value = transcript;
+            micButton.style.backgroundColor = "#007bff";
+            isListening = false;
+        };
+
+        // Handle speech recognition errors
+        recognition.onerror = (event) => {
+            console.error("Speech recognition error:", event.error);
+            alert("An error occurred while processing your voice. Please try again.");
+            micButton.style.backgroundColor = "#007bff";
+            isListening = false;
+        };
+
+        // Handle when speech recognition ends
+        recognition.onend = () => {
+            micButton.style.backgroundColor = "#007bff";
+            isListening = false;
+        };
+
+        // Function to generate speech from text
+        function speakMessage(text) {
+        if ('speechSynthesis' in window) {
+            speechSynthesis.cancel(); // Stop any previous speech immediately
+            let utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = "en-US";
+            utterance.rate = 1.0; // Speed of the speech
+            utterance.pitch = 1.0; // Pitch of the speech
+            speechSynthesis.speak(utterance);
+        } else {
+            console.warn("Text-to-speech not supported in this browser.");
+        }
+    }
+
+        // Observe the chat box for new bot messages only
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                mutation.addedNodes.forEach((node) => {
+                    if (node.classList && node.classList.contains("bot-message")) {
+                        // Get only the latest bot message and speak it
+                        const botText = node.querySelector("p")?.textContent.trim();
+                        if (botText) {
+                            speechSynthesis.cancel(); // Stop any previous speech
+                            setTimeout(() => speakMessage(botText), 500);
+                        }
+                    }
+                });
+            });
+        });
+
+        observer.observe(chatBox, { childList: true, subtree: false });
+
+        document.querySelectorAll(".bot-message p").forEach((msg) => {
+            speakMessage(msg.textContent);
+        });
+
+    });
+
+</script>

@@ -9,11 +9,13 @@
 </head>
 <body>
     <div class="container">
-        <h1>Welcome To HealthCare Chat</h1>
+        <h1>Welcome To Swasthyafy AI</h1>
 
         <h2>
-            Your Personal Health Assistant, Powered by AI.
+            This assessment is for informational purposes only and does not provide medical diagnoses. In case of a medical emergency, call your local emergency number immediately..
         </h2>
+
+        <h3>Please complete the brief form below before proceeding. This will enable a more accurate assessment of your symptoms. If you're making this assessment on behalf of someone else, please provide their information rather than your own.</h3>
         {% if name and age %}
             <div class="submitted-info">
                 <p><strong>Name:</strong> {{ name }}</p>
@@ -23,17 +25,14 @@
 
         <form id="userForm" method="post">
             <div class="input-group">
-                <input type="text" id="name" name="name" placeholder="Enter your name" required>
+                <input type="text" id="name" name="name" placeholder="Name" required>
+                <input type="text" id="number" name="number" placeholder="Phone Number" required>
             </div>
+            
             <div class="input-group">
-                <input type="email" id="email" name="email" placeholder="Enter your email" required>
-            </div>
-            <div class="input-group">
-                <input type="number" id="age" name="age" placeholder="Enter your age" required>
-            </div>
-            <div class="input-group">
+                <input type="number" id="age" name="age" placeholder=" Age" required>
                 <select id="gender" name="gender" required>
-                    <option value="" disabled selected>Select Gender</option>
+                    <option value="" disabled selected>Gender</option>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
                     <option value="other">Other</option>

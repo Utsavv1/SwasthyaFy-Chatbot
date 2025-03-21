@@ -1,139 +1,160 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Disease Prediction</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #d0dbdace; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .container {
-            background-color: #ffffff; 
-            border-radius: 12px; 
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-            width: 90%;
-            max-width: 600px;
-            padding: 30px;
-            text-align: left;
-        }
-        h1 {
-            color: #333333; 
-            font-size: 28px;
-            margin-bottom: 20px;
-        }
-        .section {
-            margin-bottom: 20px;
-        }
-        .section-title {
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #007bff; 
-        }
-        .info-list {
-            list-style: none;
-            padding: 0;
-        }
-        .info-list li {
-            margin-bottom: 5px;
-            color: #444444; 
-        }
-        .disease-list {
-            background-color: #e8f7fa;
-            border-radius: 8px;
-            padding: 20px;
-            line-height: 1.6;
-            color: #444444; 
-            white-space: pre-wrap; 
-            word-break: break-word; 
-        }
-        .return-button {
-            display: inline-block;
-            margin-top: 30px;
-            padding: 10px 20px;
-            background-color: #007bff; 
-            color: #ffffff; 
-            text-decoration: none;
-            border-radius: 6px;
-            transition: background-color 0.3s ease;
-        }
-        .return-button:hover {
-            background-color: #001d4b;
-        }
-        button {
-            background-color: #007bff; /* Blue button */
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px; /* Rounded corners */
-            cursor: pointer;
-            font-size: 15px;
-            transition: background-color 0.3s ease; /* Smooth hover effect */
-        }
-        button:hover {
-            background-color: #001d4b; /* Darker blue on hover */
-        }
-    </style>
-</head>
-<body>
-    <div class="container" id="contentToDownload">
-        <h1>Predicted Diseases</h1>
-        <div class="section">
-            <div class="section-title">User Information</div>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Disease Prediction</title>
+        <style>
+                body {
+                font-family: 'Arial', sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #d0dbdace;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                }
+                .container {
+                background-color: #ffffff;
+                border-radius: 12px;
+                box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+                max-width: 1200px;
+                padding: 30px;
+                text-align: left;
+                }
+                header{
+                    display: flex;
+                    flex-direction: row;
+                }
+                h1 {
+                width: 600px;
+                color: #ffffff; /* White text color for contrast */
+                font-size: 28px;
+                margin-bottom: 20px;
+                text-align: center; /* Centers the text */
+                background-color: #20C997; /* Blue background color */
+                padding: 15px; /* Adds padding for better spacing */
+                border-radius: 8px; /* Rounds the corners of the header */
+                }
+                .section {
+                margin-bottom: 19px;
+                }
+                .section-title {
+                font-size: x-large;
+                font-weight: bold;
+                margin-bottom: 10px;
+                color: #000000;
+                text-align: center;
+                }
+                .info-list {
+                list-style: none;
+                padding: 0;
+                }
+                .info-list li {
+                margin-bottom: 5px;
+                color: #444444;
+                }
+                .disease-list {
+                font-size: large;
+                background-color: #e8f7fa;
+                border-radius: 10px;
+                padding: 20px;
+                line-height: 1.6;
+                color: #000000;
+                white-space: pre-wrap;
+                text-transform: capitalize;
+                }
+                strong
+                {
+                color: #000000; /* Blue color for emphasis */
+                font-size: 1.1em; /* Slightly larger font size */
+                }
+                .return-button {
+                display: inline-block;
+                margin-top: 30px;
+                padding: 10px 20px;
+                background-color: #007bff;
+                color: #ffffff;
+                text-decoration: none;
+                border-radius: 6px;
+                transition: background-color 0.3s ease;
+                }
+                .return-button:hover {
+                background-color: #001d4b;
+                }
+                button {
+                    height: 90px;
+                    width: 300px;
+                margin-left: 200px;
+                background-color: #007bff; /* Blue button */
+                color: white;
+                border: none;
+                padding: 12px;
+                border-radius: 8px; /* Rounded corners */
+                cursor: pointer;
+                font-size: 20px;
+                transition: background-color 0.3s ease; /* Smooth hover effect */
+                }
+                button:hover {
+                background-color: #001d4b; /* Darker blue on hover */
+                }
+
+        </style></head>
+            <body>
+                <div class="container" id="contentToDownload">
+                    <header>
+                <h1>Swasthyafy Report</h1>
+                <button type="button" id="downloadButton">Download Report</button>
+                </header>
+                    <div class="section">
+                <div class="section-title">User Information</div>
             <ul class="info-list">
                 <li><strong>Name:</strong> {{ user_info.name }}</li>
                 <li><strong>Email:</strong> {{ user_info.email }}</li>
                 <li><strong>Age:</strong> {{ user_info.age }}</li>
                 <li><strong>Gender:</strong> {{ user_info.gender }}</li>
             </ul>
-        </div>
-        <div class="section">
-            <div class="section-title">Predicted Diseases</div>
-            <div class="disease-list">
-                {{ predicted_diseases }}
             </div>
-        </div>
-        <button type="button" id="downloadButton">Download Report</button>
-        <a href="/" class="return-button">Return to Home</a>
-    </div>
+                <div class="section">
+                <div class="section-title">Swasthyafy Report</div>
+                <div class="disease-list">
+            {{ predicted_diseases }}
+                </div>
+                </div>
+                
+                <a href="/" class="return-button">Return to Home</a>
+                </div>
 
-    <!-- Include the jsPDF and html2pdf.js libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script>
-        // Add an event listener to the "Download Report" button
-        document.getElementById('downloadButton').addEventListener('click', function () {
+            <!-- Include the jsPDF and html2pdf.js libraries -->
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+            <script>
+            // Add an event listener to the "Download Report" button
+                document.getElementById('downloadButton').addEventListener('click', function () {
             // Select the content to download
-            const content = document.getElementById('contentToDownload');
+                const content = document.getElementById('contentToDownload');
 
             // Hide the buttons before generating the PDF
-            const downloadButton = document.getElementById('downloadButton');
-            const returnButton = document.querySelector('.return-button');
-            downloadButton.style.display = 'none';
-            returnButton.style.display = 'none';
+                const downloadButton = document.getElementById('downloadButton');
+                const returnButton = document.querySelector('.return-button');
+                downloadButton.style.display = 'none';
+                returnButton.style.display = 'none';
 
             // Options for the PDF generation
-            const options = {
+                const options = {
                 margin: 10, // Margin around the content
                 filename: 'full_page_report.pdf', // Name of the downloaded file
                 html2canvas: { scale: 2 }, // Scale factor for better resolution
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } // PDF settings
-            };
+                };
 
             // Generate the PDF using html2pdf.js
             html2pdf().set(options).from(content).save().then(() => {
-                // Restore the buttons after the PDF is generated
-                downloadButton.style.display = 'inline-block';
-                returnButton.style.display = 'inline-block';
+            // Restore the buttons after the PDF is generated
+            downloadButton.style.display = 'inline-block';
+            returnButton.style.display = 'inline-block';
             });
-        });
-    </script>
-</body>
+            });
+    </script></body>
 </html>
