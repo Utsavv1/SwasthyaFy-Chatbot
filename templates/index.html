@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Information</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/css/intlTelInput.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/intlTelInput.min.js"></script>
     <script src="{{ url_for('static', filename='script.js') }}" defer></script>
 </head>
 <body>
@@ -26,7 +28,12 @@
         <form id="userForm" method="post">
             <div class="input-group">
                 <input type="text" id="name" name="name" placeholder="Name" required>
-                <input type="text" id="number" name="number" placeholder="Phone Number" required>
+                <input type="tel" id="number" name="number" 
+                placeholder="Phone Number" required 
+                value="+91 " maxlength="14" 
+                pattern="\+91\s[6-9]\d{9}" 
+                oninput="validatePhoneNumber(this)">
+
             </div>
             
             <div class="input-group">

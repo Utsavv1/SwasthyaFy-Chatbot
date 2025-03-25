@@ -64,3 +64,9 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+function validatePhoneNumber(input) {
+    if (!input.value.startsWith("+91 ")) {
+        input.value = "+91 ";
+    }
+}
+
