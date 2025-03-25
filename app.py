@@ -60,7 +60,7 @@ def chatbot():
                     f"Based on the user's symptoms ({', '.join([msg['content'] for msg in chat_history if msg['role'] == 'user'])}), "
                     f"Based on the user's symptoms, provide a detailed History of Present Illness (HPI) summarizing the onset, duration, severity, location, and associated factors of the symptoms."
                     "provide a list of 3 probable diseases, each on a new line."
-                    "Also provide that diseases Description, Precautions, Medication, and iet."
+                    "Also provide that diseases Description, Precautions, Medication, and diet . And also this description,precautions,medication and diet should be in the form of bullet points ."
                 )
                 response = model.generate_content(prompt)
                 bot_response = response.text.strip()

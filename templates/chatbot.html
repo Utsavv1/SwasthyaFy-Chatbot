@@ -142,6 +142,40 @@
         #chat-form button:hover {
             background-color: #050e38;
         }
+
+        @media  (max-width: 768px) {
+            .chat-container {
+                width: 90%;
+                padding: 15px;
+            }
+            .chat-box {
+                padding: 15px;
+            }
+
+            header h1 {
+                font-size: 16px;
+            }    
+
+            header p {
+                font-size: 12px;
+            }    
+
+            .chat-box p {
+                font-size: 12px;
+            }  
+
+            #chat-form input {
+                padding: auto;
+                font-size: 12px;
+            }  
+
+            #chat-form button {
+                width: 70%;
+                font-size: 12px;
+                margin-left: 3px;
+                margin-right: 3px;
+            }
+        }
     </style>
 </head>
 
@@ -149,7 +183,7 @@
     <div class="chat-container">
         <header>
             <h1>
-                <i class="fa-solid fa-stethoscope fa-beat-fade" style="color: #74C0FC;"></i> Healthcare AI Assistant
+                <i class="fa-solid fa-stethoscope fa-beat-fade" style="color: #000000;"></i> Healthcare AI Assistant
             </h1>
             <p>Welcome, {{ user_info.name }}! You are {{ user_info.age }} years old and identify as {{ user_info.gender
                 }}.</p>

@@ -13,9 +13,10 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                height: 100vh;
+                /* height: 100vh; */
                 }
                 .container {
+                /* max-height: fit-content; */
                 background-color: #ffffff;
                 border-radius: 12px;
                 box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
@@ -56,6 +57,7 @@
                 color: #444444;
                 }
                 .disease-list {
+                
                 font-size: large;
                 background-color: #e8f7fa;
                 border-radius: 10px;
@@ -100,7 +102,54 @@
                 background-color: #001d4b; /* Darker blue on hover */
                 }
 
-        </style></head>
+                @media (max-width: 768px) {
+                .container {
+                    width: 85%;
+                padding: 15px;
+                }
+                h1 {
+                font-size: 24px;
+                }
+                .return-button {
+                margin-top: 15px;
+                }
+                .disease-list{
+                font-size: small;
+                padding: 15px;
+                }
+                button {
+                margin-top: 1%;
+                margin-right: 10%;
+                margin-left: 30%;
+                height: 40%;
+                width: 200px;
+                }
+            }
+                @media (max-width: 425px) {
+                .container {
+                    width: 90%;
+                padding: 15px;
+                }
+                h1 {
+                font-size: 24px;
+                }
+                .return-button {
+                margin-top: 15px;
+                }
+                .disease-list{
+                font-size: small;
+                padding: 15px;
+                }
+                button {
+                    margin-top: 6%;
+                margin-left: 20%;
+                height: 60%;
+                width: 200px;
+                }
+            }
+
+        </style>
+        </head>
             <body>
                 <div class="container" id="contentToDownload">
                     <header>
@@ -119,7 +168,7 @@
                 <div class="section">
                 <div class="section-title">Swasthyafy Report</div>
                 <div class="disease-list">
-            {{ predicted_diseases }}
+                    {{ predicted_diseases }}
                 </div>
                 </div>
                 
@@ -156,5 +205,13 @@
             returnButton.style.display = 'inline-block';
             });
             });
-    </script></body>
+            document.addEventListener("DOMContentLoaded", function() {
+            let diseaseList = document.querySelector(".disease-list");
+            diseaseList.innerHTML = diseaseList.innerHTML.replace(
+                /(\b[A-Za-z\s]+):/g, '<b>$1:</b>'
+            );
+        });
+
+    </script>
+    </body>
 </html>

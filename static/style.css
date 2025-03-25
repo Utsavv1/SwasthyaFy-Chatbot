@@ -123,3 +123,72 @@ button:hover {
     background-color: #001d4b; /* Darker blue on hover */
 }
 
+
+/* Responsive Design for Mobile (max-width: 768px) */
+@media (max-width: 768px) {
+    .container {
+        width: 90%;
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 22px;
+    }
+
+    h2, h3 {
+        font-size: 14px;
+    }
+
+    .input-group {
+        display: block;
+    }
+
+    .input-group input {
+        width: 70%;
+        margin-bottom: 10px;
+    }
+    .input-group select {
+        width: 76%;
+        margin-bottom: 10px;
+    }
+
+    button {
+        max-width: max-content;
+        font-size: 16px;
+        padding: 10px;
+    }
+}
+@media (max-width: 425px) {
+    .container {
+        width: 90%;
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 16px;
+    }
+
+    h2, h3 {
+        font-size: 12px;
+    }
+
+    .input-group {
+        display: block;
+    }
+
+    .input-group input {
+        width: 70%;
+        margin-bottom: 10px;
+    }
+
+    .input-group select {
+        width: 81%;
+        margin-bottom: 10px;
+    }
+
+    button {
+        width: fit-content;
+        font-size: 16px;
+        padding: 10px;
+    }
+}
