@@ -101,12 +101,13 @@ form {
 }
 
 .input{
-    margin-bottom: 30px;
-    margin-left: 88%;
+    margin-left: 90%;
+    margin-bottom: 3%;
 }
+
 /* Button Styling */
 button {
-    display: block;/* Ensures the button behaves as a block-level element */
+    display: block; /* Ensures the button behaves as a block-level element */
     margin: 0 auto; /* Centers the button horizontally within the container */
     width: 680px; /* Fixed width of the button */
     background-color: #007BFF; /* Blue button */
@@ -144,12 +145,12 @@ button:hover {
     }
 
     .input-group input {
-        width: 70%;
+        width: 90%;
         margin-bottom: 10px;
 
     }
     .input-group select {
-        width: 76%;
+        width: 96%;
         margin-bottom: 10px;
     }
 
@@ -178,12 +179,12 @@ button:hover {
     }
 
     .input-group input {
-        width: 70%;
+        width: 85%;
         margin-bottom: 10px;
     }
 
     .input-group select {
-        width: 81%;
+        width: 96%;
         margin-bottom: 10px;
     }
 

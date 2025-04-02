@@ -135,7 +135,7 @@ def set_language():
 def clean_response(response):
     response = response.replace("*", "").replace("_", "")
     response = response.capitalize()
-    response = re.sub(r"\*\*(.*?)\*\*", r"\1", response)
+    response = re.sub(r"\*\*(.*?#)\*\*", r"\1", response)
     return response
 
 # 🟢 Helper function to translate text to the user's selected language
