@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Disease Prediction</title>
         <style>
-                body {
+            body {
                 font-family: 'Arial', sans-serif;
                 margin: 0;
                 padding: 0;
@@ -14,7 +14,8 @@
                 justify-content: center;
                 align-items: center;
                 /* height: 100vh; */
-                }
+            }
+
                 .container {
                 /* max-height: fit-content; */
                 background-color: #ffffff;
@@ -153,11 +154,11 @@
             <body>
                 <div class="container" id="contentToDownload">
                     <header>
-                <h1>Swasthyafy Report</h1>
-                <button type="button" id="downloadButton">Download Report</button>
+                <h1 data-translate="welcome">Swasthyafy Report</h1>
+                <button type="button" id="downloadButton" data-translate="download">Download Report</button>
                 </header>
                     <div class="section">
-                <div class="section-title">User Information</div>
+                <div class="section-title" data-translate="user_information">User Information</div>
             <ul class="info-list">
                 <li><strong>Name:</strong> {{ user_info.name }}</li>
                 <li><strong>Phone Number:</strong> {{ user_info.number }}</li>
@@ -166,15 +167,15 @@
             </ul>
             </div>
                 <div class="section">
-                <div class="section-title">Swasthyafy Report</div>
-                <div class="disease-list">
+                <div class="section-title" data-translate="welcome">Swasthyafy Report</div>
+                <div class="disease-list" data-translate="predicted_diseases">
                     {{ predicted_diseases }}
                 </div>
                 </div>
                 
-                <a href="/" class="return-button">Return to Home</a>
+                <a href="/" class="return-button" data-translate="return_home">Return to Home</a>
                 </div>
-
+                
             <!-- Include the jsPDF and html2pdf.js libraries -->
             <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -193,7 +194,7 @@
             // Options for the PDF generation
                 const options = {
                 margin: 10, // Margin around the content
-                filename: 'full_page_report.pdf', // Name of the downloaded file
+                filename: '{{user_info.name}}.pdf', // Name of the downloaded file
                 html2canvas: { scale: 2 }, // Scale factor for better resolution
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } // PDF settings
                 };
@@ -212,6 +213,10 @@
             );
         });
 
+        document.addEventListener("DOMContentLoaded", function () {
+    console.log("Stored Language:", localStorage.getItem("chatbotLanguage"));
+});
     </script>
+    <script src="{{ url_for('static', filename='translate.js') }}" defer></script>
     </body>
 </html>

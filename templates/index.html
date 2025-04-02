@@ -1,57 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Information</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/css/intlTelInput.min.css"/>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/css/intlTelInput.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/intlTelInput.min.js"></script>
     <script src="{{ url_for('static', filename='script.js') }}" defer></script>
 </head>
-<body>
-    <div class="container">
-        <h1>Welcome To Swasthyafy AI</h1>
 
-        <h2>
-            This assessment is for informational purposes only and does not provide medical diagnoses. In case of a medical emergency, call your local emergency number immediately..
+<body>
+
+    <div class="container">
+        <div class="input">
+            <select name="language" id="language">
+                <option value="english">English</option>
+                <option value="hindi">Hindi</option>
+                <option value="spanish">Spanish</option>
+                <option value="french">French</option>
+            </select>
+        </div>
+        <h1 data-translate="welcome">Welcome To Swasthyafy AI</h1>
+
+        <h2 data-translate="disclaimer">
+            This assessment is for informational purposes only and does not provide medical diagnoses. In case of a
+            medical emergency, call your local emergency number immediately.
         </h2>
 
-        <h3>Please complete the brief form below before proceeding. This will enable a more accurate assessment of your symptoms. If you're making this assessment on behalf of someone else, please provide their information rather than your own.</h3>
-        {% if name and age %}
-            <div class="submitted-info">
-                <p><strong>Name:</strong> {{ name }}</p>
-                <p><strong>Age:</strong> {{ age }}</p>
-            </div>
-        {% endif %}
+        <h3 data-translate="instructions">
+            Please complete the brief form below before proceeding. This will enable a more accurate assessment of your
+            symptoms. If you're making this assessment on behalf of someone else, please provide their information
+            rather than your own.
+        </h3>
 
         <form id="userForm" method="post">
             <div class="input-group">
-                <input type="text" id="name" name="name" placeholder="Name" required>
-                <input type="tel" id="number" name="number" 
-                placeholder="Phone Number" required 
-                value="+91 " maxlength="14" 
-                pattern="\+91\s[6-9]\d{9}" 
-                oninput="validatePhoneNumber(this)">
-
+                <input type="text" id="name" name="name" placeholder="Name" data-translate="name" required>
+                <input type="tel" id="number" name="number" placeholder="Phone Number" required value="+91"
+                    maxlength="14" pattern="\+91\s[6-9]\d{9}" oninput="validatePhoneNumber(this)">
             </div>
-            
+
             <div class="input-group">
-                <input type="number" id="age" name="age" placeholder=" Age" required>
+                <input type="number" id="age" name="age" min="0" max="130" placeholder="Age" data-translate="age" required>
                 <select id="gender" name="gender" required>
-                    <option value="" disabled selected>Gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
+                    <option value="" disabled selected data-translate="gender">Gender</option>
+                    <option value="male" data-translate="male">Male</option>
+                    <option value="female" data-translate="female">Female</option>
+                    <option value="other" data-translate="other">Other</option>
                 </select>
+
             </div>
 
-            <button type="submit">Submit</button>
+            <button type="submit" id="submit-btn">Submit</button>
 
-            <p>
-                While our chatbot provides helpful insights and guidance, it is not a substitute for professional medical advice, diagnosis, or treatment. Always consult a qualified healthcare provider for any health concerns.
+            <p data-translate="note">
+                While our chatbot provides helpful insights and guidance, it is not a substitute for professional
+                medical advice, diagnosis, or treatment. Always consult a qualified healthcare provider for any health
+                concerns.
             </p>
         </form>
     </div>
+    <script src="{{ url_for('static', filename='translate.js') }}" defer></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const languageSelect = document.getElementById("language");
+
+            // Load saved language from localStorage
+            const savedLang = localStorage.getItem("chatbotLanguage") || "english";
+            languageSelect.value = savedLang;
+
+            // Fetch translations and apply them
+            fetchTranslations(savedLang);
+
+            // When user selects a new language
+            languageSelect.addEventListener("change", function () {
+                const selectedLang = this.value;
+                localStorage.setItem("chatbotLanguage", selectedLang);
+
+                // Instantly translate the page
+                fetchTranslations(selectedLang);
+                location.reload();
+            });
+        });
+
+        // Fetch and apply translations dynamically
+        function fetchTranslations(lang) {
+            fetch(`/get-translations?lang=${lang}`)
+                .then(response => response.json())
+                .then(translations => {
+                    document.querySelectorAll("[data-translate]").forEach(el => {
+                        const key = el.getAttribute("data-translate");
+                        if (translations[key]) {
+                            el.textContent = translations[key];
+                        }
+                    });
+                })
+                .catch(error => console.error("Translation Error:", error));
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const ageInput = document.getElementById("age");
+            const ageError = document.getElementById("age-error");
+
+            ageInput.addEventListener("input", function () {
+                let ageValue = parseInt(ageInput.value, 10);
+
+                if (ageValue < 0 || ageValue > 130) {
+                    ageError.style.display = "block"; // Show error message
+                } else {
+                    ageError.style.display = "none";  // Hide error message
+                }
+            });
+
+            document.getElementById("chat-form").addEventListener("submit", function (event) {
+                let ageValue = parseInt(ageInput.value, 10);
+
+                if (ageValue < 0 || ageValue > 130) {
+                    event.preventDefault(); // Stop form submission
+                    ageError.style.display = "block";
+                }
+            });
+        });
+
+    </script>
+    <script src="{{ url_for('static', filename='translate.js') }}" defer></script>
 </body>
+
 </html>

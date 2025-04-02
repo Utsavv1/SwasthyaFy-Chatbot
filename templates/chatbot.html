@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Healthcare AI Chatbot</title>
+    <title>Swasthyafy AI Chatbot</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script src="{{ url_for('static', filename='script.js') }}" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -143,31 +143,32 @@
             background-color: #050e38;
         }
 
-        @media  (max-width: 768px) {
+        @media (max-width: 768px) {
             .chat-container {
                 width: 90%;
                 padding: 15px;
             }
+
             .chat-box {
                 padding: 15px;
             }
 
             header h1 {
                 font-size: 16px;
-            }    
+            }
 
             header p {
                 font-size: 12px;
-            }    
+            }
 
             .chat-box p {
                 font-size: 12px;
-            }  
+            }
 
             #chat-form input {
                 padding: auto;
                 font-size: 12px;
-            }  
+            }
 
             #chat-form button {
                 width: 70%;
@@ -182,10 +183,11 @@
 <body>
     <div class="chat-container">
         <header>
-            <h1>
-                <i class="fa-solid fa-stethoscope fa-beat-fade" style="color: #000000;"></i> Healthcare AI Assistant
+            <h1 data-translate="welcome">
+                <i class="fa-solid fa-stethoscope fa-beat-fade" style="color: #000000;"></i> Swasthyafy AI Assistant
             </h1>
-            <p>Welcome, {{ user_info.name }}! You are {{ user_info.age }} years old and identify as {{ user_info.gender
+            <p data-translate="welcome">Welcome, {{ user_info.name }}! You are {{ user_info.age }} years old and identify as {{
+                user_info.gender
                 }}.</p>
         </header>
         <div class="chat-box" id="chat-box">
@@ -201,110 +203,152 @@
             {% endfor %}
         </div>
         <form id="chat-form" method="post">
-            <input type="text" name="user_input" id="user_input" placeholder="Describe your symptoms..." required>
+            <input type="text" name="user_input" id="user_input" placeholder="Describe your symptoms..." data-translate>
             <button type="submit">
                 <i class="fa-sharp fa-solid fa-paper-plane"></i>
                 <button type="button" id="mic-button">
                     <i class="fa-solid fa-microphone" style="color: #ffffff;"></i>
                 </button>
     </div>
-</body>
 
-</html>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const micButton = document.getElementById("mic-button");
+            const userInput = document.getElementById("user_input");
+            const chatBox = document.getElementById("chat-box");
+            const languageSelect = document.getElementById("language-select");
 
-<script>
+            let selectedLanguage = localStorage.getItem("chatbotLanguage") || "en-US";
 
-    document.addEventListener("DOMContentLoaded", () => {
-        const micButton = document.getElementById("mic-button");
-        const userInput = document.getElementById("user_input");
-        const chatBox = document.getElementById("chat-box");
+            if (!("webkitSpeechRecognition" in window)) {
+                alert("Your browser does not support the Web Speech API. Please use Chrome or another supported browser.");
+                micButton.disabled = true;
+                return;
+            }
 
-        // Check if the browser supports Web Speech API
-        if (!("webkitSpeechRecognition" in window)) {
-            alert("Your browser does not support the Web Speech API. Please use Chrome or another supported browser.");
-            micButton.disabled = true;
-            return;
-        }
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = selectedLanguage;
 
-        // Initialize the SpeechRecognition object
-        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-        recognition.continuous = false;
-        recognition.interimResults = false;
-        recognition.lang = "en-US";
+            let isListening = false;
 
-        let isListening = false;
+            micButton.addEventListener("click", () => {
+                if (isListening) {
+                    recognition.stop();
+                    micButton.style.backgroundColor = "#007bff";
+                    isListening = false;
+                } else {
+                    recognition.start();
+                    micButton.style.backgroundColor = "#ff4d4d";
+                    isListening = true;
+                }
+            });
 
-        // Handle microphone button click
-        micButton.addEventListener("click", () => {
-            if (isListening) {
-                recognition.stop();
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                userInput.value = transcript;
                 micButton.style.backgroundColor = "#007bff";
                 isListening = false;
-            } else {
-                recognition.start();
-                micButton.style.backgroundColor = "#ff4d4d";
-                isListening = true;
+            };
+
+            recognition.onerror = (event) => {
+                console.error("Speech recognition error:", event.error);
+                alert("An error occurred while processing your voice. Please try again.");
+                micButton.style.backgroundColor = "#007bff";
+                isListening = false;
+            };
+
+            recognition.onend = () => {
+                micButton.style.backgroundColor = "#007bff";
+                isListening = false;
+            };
+            
+            function speakMessage(text) {
+                if ('speechSynthesis' in window) {
+                    speechSynthesis.cancel(); // Stop any previous speech immediately
+
+                    let utterance = new SpeechSynthesisUtterance(text);
+
+                    // Get the selected language from local storage
+                    let selectedLanguage = localStorage.getItem("chatbotLanguage") || "en";
+
+                    // Map the chatbot's selected language to Speech Synthesis language codes
+                    let langMap = {
+                        "en": "en-US",
+                        "hi": "hi-IN"
+                    };
+
+                    utterance.lang = langMap[selectedLanguage] || "en-US";  // Default to English if not found
+                    utterance.rate = 1.0; // Speed of speech
+                    utterance.pitch = 1.0; // Pitch of speech
+
+                    speechSynthesis.speak(utterance);
+                } else {
+                    console.warn("Text-to-speech not supported in this browser.");
+                }
             }
-        });
 
-        // Handle speech recognition results
-        recognition.onresult = (event) => {
-            const transcript = event.results[0][0].transcript;
-            userInput.value = transcript;
-            micButton.style.backgroundColor = "#007bff";
-            isListening = false;
-        };
-
-        // Handle speech recognition errors
-        recognition.onerror = (event) => {
-            console.error("Speech recognition error:", event.error);
-            alert("An error occurred while processing your voice. Please try again.");
-            micButton.style.backgroundColor = "#007bff";
-            isListening = false;
-        };
-
-        // Handle when speech recognition ends
-        recognition.onend = () => {
-            micButton.style.backgroundColor = "#007bff";
-            isListening = false;
-        };
-
-        // Function to generate speech from text
-        function speakMessage(text) {
-        if ('speechSynthesis' in window) {
-            speechSynthesis.cancel(); // Stop any previous speech immediately
-            let utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = "en-US";
-            utterance.rate = 1.0; // Speed of the speech
-            utterance.pitch = 1.0; // Pitch of the speech
-            speechSynthesis.speak(utterance);
-        } else {
-            console.warn("Text-to-speech not supported in this browser.");
-        }
-    }
-
-        // Observe the chat box for new bot messages only
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                mutation.addedNodes.forEach((node) => {
-                    if (node.classList && node.classList.contains("bot-message")) {
-                        // Get only the latest bot message and speak it
-                        const botText = node.querySelector("p")?.textContent.trim();
-                        if (botText) {
-                            speechSynthesis.cancel(); // Stop any previous speech
-                            setTimeout(() => speakMessage(botText), 500);
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    mutation.addedNodes.forEach((node) => {
+                        if (node.classList && node.classList.contains("bot-message")) {
+                            const botText = node.querySelector("p")?.textContent.trim();
+                            if (botText) {
+                                speechSynthesis.cancel();
+                                setTimeout(() => speakMessage(botText), 500);
+                            }
                         }
-                    }
+                    });
                 });
+            });
+
+            observer.observe(chatBox, { childList: true, subtree: false });
+
+            document.querySelectorAll(".bot-message p").forEach((msg) => {
+                speakMessage(msg.textContent);
+            });
+
+            // Update language preference when changed
+            languageSelect.addEventListener("change", function () {
+                let newLanguage = this.value;
+                localStorage.setItem("chatbotLanguage", newLanguage);
+                console.log("Updated Language:", newLanguage);
+            });
+        });
+    </script>
+
+
+    <script>
+        const translations = {
+            "en": {
+                "Swasthyafy AI Assistant": "Swasthyafy AI Assistant",
+                "Welcome, {{ user_info.name }}! You are {{ user_info.age }} years old and identify as {{ user_info.gender }}.":
+                    "Welcome, {{ user_info.name }}! You are {{ user_info.age }} years old and identify as {{ user_info.gender }}."
+            },
+            "hi": {
+                "Swasthyafy AI Assistant": "स्वास्थ्यफाई एआई सहायक",
+                "Welcome, {{ user_info.name }}! You are {{ user_info.age }} years old and identify as {{ user_info.gender }}.":
+                    "स्वागत है, {{ user_info.name }}! आपकी उम्र {{ user_info.age }} वर्ष है और आप स्वयं को {{ user_info.gender }} के रूप में पहचानते हैं।"
+            }
+        };
+
+        document.getElementById("language-select").addEventListener("change", function () {
+            let selectedLanguage = this.value;
+            document.querySelectorAll("[data-translate]").forEach(element => {
+                let key = element.getAttribute("data-translate");
+                if (translations[selectedLanguage][key]) {
+                    element.innerHTML = translations[selectedLanguage][key];
+                }
             });
         });
 
-        observer.observe(chatBox, { childList: true, subtree: false });
-
-        document.querySelectorAll(".bot-message p").forEach((msg) => {
-            speakMessage(msg.textContent);
+        document.addEventListener("DOMContentLoaded", function () {
+            console.log("Stored Language:", localStorage.getItem("chatbotLanguage"));
         });
 
-    });
+    </script>
+    <script src="{{ url_for('static', filename='translate.js') }}" defer></script>
+</body>
 
-</script>
+</html>

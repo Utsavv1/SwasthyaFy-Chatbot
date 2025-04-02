@@ -1,6 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 import google.generativeai as genai
 import re  
+from googletrans import Translator  
+
+import secrets  
 
 genai.configure(api_key="AIzaSyAy00DV8ewg2EAQYjKzMetfHzGE0zky7qg")
 generation_config = {
@@ -15,79 +18,100 @@ model = genai.GenerativeModel(
     generation_config=generation_config,
 )
 
+translator = Translator()  
+
 app = Flask(__name__)
-app.secret_key = "AIzaSyAy00DV8ewg2EAQYjKzMetfHzGE0zky7qg"
+app.secret_key = secrets.token_hex(32)  
 
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
         name = request.form.get("name")
-        phone_number = request.form.get("phone number") 
+        phone_number = request.form.get("phone_number") 
         age = request.form.get("age")
         gender = request.form.get("gender")
-        current_user = {"name": name, "phone number": phone_number, "age": age, "gender": gender}
-        if "user_info" in session:
-            if session["user_info"] != current_user:
-                session.clear()  
-                session["user_info"] = current_user
-                session["chat_history"] = []
-        else:
-            session["user_info"] = current_user
-            session["chat_history"] = []  
+        language = request.form.get("language", "english")  
+
+        session["language"] = language  # Store language in session
+        
+        current_user = {"name": name, "phone_number": phone_number, "age": age, "gender": gender}
+        session["user_info"] = current_user
+        session["chat_history"] = []
+
         return redirect(url_for("chatbot"))
+    
     return render_template("index.html")
 
 @app.route("/chatbot", methods=["GET", "POST"])
 def chatbot():
     user_info = session.get("user_info", {})
     if not user_info:
-        return redirect(url_for("index")) 
+        return redirect(url_for("index"))  
+    
     chat_history = session.get("chat_history", [])
+    language = session.get("language", "english")
 
     if request.method == "POST":
-        user_input = request.form.get("user_input").strip().lower()
+        user_input = request.form.get("user_input").strip()
+
+        # Translate user input to English if needed
+        translated_input = user_input if language == "english" else translate_to_english(user_input, language)
+
         chat_history.append({"role": "user", "content": user_input})
-        session["chat_history"] = chat_history 
+        session["chat_history"] = chat_history  
+
         question_count = sum(1 for msg in chat_history if msg["role"] == "model" and "?" in msg["content"])
 
         try:
             if question_count < 6:
-                prompt = f"Ask the next clarifying question about the user's symptoms. So far, the user has said: {', '.join([msg['content'] for msg in chat_history if msg['role'] == 'user'])}."
+                prompt = f"Ask the next clarifying question about the user's symptoms. The user has said: {', '.join([msg['content'] for msg in chat_history if msg['role'] == 'user'])}."
                 response = model.generate_content(prompt)
                 bot_response = response.text.strip()
             else:
                 prompt = (
                     f"Based on the user's symptoms ({', '.join([msg['content'] for msg in chat_history if msg['role'] == 'user'])}), "
-                    f"Based on the user's symptoms, provide a detailed History of Present Illness (HPI) summarizing the onset, duration, severity, location, and associated factors of the symptoms."
-                    "provide a list of 3 probable diseases, each on a new line."
-                    "Also provide that diseases Description, Precautions, Medication, and diet . And also this description,precautions,medication and diet should be in the form of bullet points ."
+                    f"predict the disease and provide a detailed history, along with treatment, medication, precautions, and diet."
                 )
                 response = model.generate_content(prompt)
                 bot_response = response.text.strip()
 
                 bot_response = clean_response(bot_response)
+                
+                # Translate the final disease prediction if needed
+                if language != "english":
+                    bot_response = translate_from_english(bot_response, language)
 
                 session["predicted_diseases"] = bot_response
                 return redirect(url_for("disease_prediction"))
         except Exception as e:
             bot_response = f"Sorry, I encountered an error: {str(e)}"
+        
+        # Translate chatbot response if needed
+        if language != "english":
+            bot_response = translate_from_english(bot_response, language)
+
         chat_history.append({"role": "model", "content": bot_response})
         session["chat_history"] = chat_history  
 
-    return render_template("chatbot.html", user_info=user_info, chat_history=chat_history)
+    return render_template("chatbot.html", user_info=user_info, chat_history=chat_history, language=language)
 
 @app.route("/disease-prediction", methods=["GET"])
 def disease_prediction():
     predicted_diseases = session.get("predicted_diseases", "No predictions available.")
-
     user_info = session.get("user_info", {}) 
-    chat_history = session.get("chat_history", [])
-    user_responses = [msg["content"] for msg in chat_history if msg["role"] == "user"]
+    user_responses = [msg["content"] for msg in session.get("chat_history", []) if msg["role"] == "user"]
+    language = session.get("language", "english")
+
+    # Translate the final prediction page if needed
+    if language != "english":
+        predicted_diseases = translate_from_english(predicted_diseases, language)
+
     return render_template(
         "disease_prediction.html",
         predicted_diseases=predicted_diseases,
         user_info=user_info,
-        user_responses=user_responses
+        user_responses=user_responses,
+        language=language
     )
 
 @app.route("/clear-chat", methods=["POST"])
@@ -98,18 +122,32 @@ def clear_chat():
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
 
-# Helper function to clean the response
-def clean_response(response):
-    """
-    Cleans the response by removing unwanted characters, extra spaces, and formatting.
-    """
+@app.route("/set-language", methods=["POST"])
+def set_language():
+    language = request.form.get("language", "english")
+    session["language"] = language
+    return jsonify({"success": True, "language": language})
 
+# 🟢 Helper function to clean the response
+def clean_response(response):
     response = response.replace("*", "").replace("_", "")
-    
     response = response.capitalize()
     response = re.sub(r"\*\*(.*?)\*\*", r"\1", response)
-
     return response
+
+# 🟢 Helper function to translate text to the user's selected language
+def translate_from_english(text, target_language):
+    try:
+        return translator.translate(text, dest=target_language).text
+    except Exception:
+        return text  
+
+# 🟢 Helper function to translate user input to English
+def translate_to_english(text, source_language):
+    try:
+        return translator.translate(text, src=source_language, dest="english").text
+    except Exception:
+        return text  
 
 if __name__ == "__main__":
     app.run(debug=True)

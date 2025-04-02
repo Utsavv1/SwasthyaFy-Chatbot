@@ -9,7 +9,6 @@ body {
     align-items: center;
     height: 100vh;
 }
-
 /* Container Styling */
 .container {
     width: 700px;
@@ -83,8 +82,6 @@ form {
     display: flex;
     flex-direction: column;
 }
-
-
 /* General styling for the container */
 .input-group {
     display: flex; /* Enables flexbox layout */
@@ -103,9 +100,13 @@ form {
     border-radius: 5px; /* Rounds the corners */
 }
 
+.input{
+    margin-bottom: 30px;
+    margin-left: 88%;
+}
 /* Button Styling */
 button {
-    display: block; /* Ensures the button behaves as a block-level element */
+    display: block;/* Ensures the button behaves as a block-level element */
     margin: 0 auto; /* Centers the button horizontally within the container */
     width: 680px; /* Fixed width of the button */
     background-color: #007BFF; /* Blue button */
@@ -145,6 +146,7 @@ button:hover {
     .input-group input {
         width: 70%;
         margin-bottom: 10px;
+
     }
     .input-group select {
         width: 76%;
