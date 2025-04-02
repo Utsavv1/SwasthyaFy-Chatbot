@@ -70,7 +70,10 @@ def chatbot():
             else:
                 prompt = (
                     f"Based on the user's symptoms ({', '.join([msg['content'] for msg in chat_history if msg['role'] == 'user'])}), "
-                    f"predict the disease and provide a detailed history, along with treatment, medication, precautions, and diet."
+                    f"provide a detailed History of Present Illness (HPI) summarizing the onset, duration, severity, location, and associated factors of the symptoms."
+                    "Provide a list of 3 probable diseases, each on a new line."
+                    "Also provide that disease's Description, Precautions, Medication, and Diet. The details should be in bullet points."
+                    "Translates all HTML pages into the user's selected language"
                 )
                 response = model.generate_content(prompt)
                 bot_response = response.text.strip()
