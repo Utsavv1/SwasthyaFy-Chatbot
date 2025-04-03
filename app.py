@@ -18,10 +18,11 @@ model = genai.GenerativeModel(
     generation_config=generation_config,
 )
 
-translator = Translator()  
+
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(32)  
+translator = Translator()  
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -98,16 +99,31 @@ def chatbot():
 
     return render_template("chatbot.html", user_info=user_info, chat_history=chat_history, language=language)
 
+def translate_text(text, target_language):
+    """Translate text using Google Translate API."""
+    if not text or target_language == "english":  # No translation needed for English
+        return text
+    try:
+        translation = translator.translate(text, dest=target_language)
+        return translation.text
+    except Exception as e:
+        print(f"Translation Error: {e}")
+        return text  # Return original text if translation fails
+
 @app.route("/disease-prediction", methods=["GET"])
 def disease_prediction():
     predicted_diseases = session.get("predicted_diseases", "No predictions available.")
     user_info = session.get("user_info", {}) 
     user_responses = [msg["content"] for msg in session.get("chat_history", []) if msg["role"] == "user"]
-    language = session.get("language", "english")
 
-    # Translate the final prediction page if needed
+    # Get the language from frontend via request headers (sent by JavaScript)
+    language = request.headers.get("chatbotLanguage", "hindi").lower()
+
+    # Translate all report data if language is not English
     if language != "english":
-        predicted_diseases = translate_from_english(predicted_diseases, language)
+        predicted_diseases = translate_text(predicted_diseases, language)
+        user_responses = [translate_text(response, language) for response in user_responses]
+        user_info = {key: translate_text(str(value), language) for key, value in user_info.items()}
 
     return render_template(
         "disease_prediction.html",
@@ -135,20 +151,13 @@ def set_language():
 def clean_response(response):
     response = response.replace("*", "").replace("_", "")
     response = response.capitalize()
-    response = re.sub(r"\*\*(.*?#)\*\*", r"\1", response)
+    response = re.sub(r"\*\*(#.*?)\*\*", r"\1", response)
     return response
 
 # 🟢 Helper function to translate text to the user's selected language
 def translate_from_english(text, target_language):
     try:
         return translator.translate(text, dest=target_language).text
-    except Exception:
-        return text  
-
-# 🟢 Helper function to translate user input to English
-def translate_to_english(text, source_language):
-    try:
-        return translator.translate(text, src=source_language, dest="english").text
     except Exception:
         return text  
 

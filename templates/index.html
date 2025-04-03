@@ -38,23 +38,23 @@
 
         <form id="userForm" method="post">
             <div class="input-group">
-                <input type="text" id="name" name="name" placeholder="Name" data-translate="name" required>
+                <input type="text" id="name" name="name" data-translate="Name" placeholder="Name" required>
                 <input type="tel" id="number" name="number" placeholder="Phone Number" required value="+91"
                     maxlength="14" pattern="\+91\s[6-9]\d{9}" oninput="validatePhoneNumber(this)">
             </div>
 
             <div class="input-group">
-                <input type="number" id="age" name="age" min="0" max="130" placeholder="Age" data-translate="age" required>
+                <input type="number" id="age" name="age" min="0" max="130" data-translate="Age" placeholder="Age" required>
                 <select id="gender" name="gender" required>
                     <option value="" disabled selected data-translate="gender">Gender</option>
                     <option value="male" data-translate="male">Male</option>
                     <option value="female" data-translate="female">Female</option>
                     <option value="other" data-translate="other">Other</option>
-                </select>
+                </select>   
 
             </div>
 
-            <button type="submit" id="submit-btn">Submit</button>
+            <button type="submit" id="submit-btn" data-translate="Submit">Submit</button>
 
             <p data-translate="note">
                 While our chatbot provides helpful insights and guidance, it is not a substitute for professional

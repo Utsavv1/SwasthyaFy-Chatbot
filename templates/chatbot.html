@@ -183,13 +183,17 @@
 <body>
     <div class="chat-container">
         <header>
-            <h1 data-translate="welcome">
+            <h1 data-translate="Swasthyafy_AI assistant">
                 <i class="fa-solid fa-stethoscope fa-beat-fade" style="color: #000000;"></i> Swasthyafy AI Assistant
             </h1>
-            <p data-translate="welcome">Welcome, {{ user_info.name }}! You are {{ user_info.age }} years old and identify as {{
-                user_info.gender
-                }}.</p>
-        </header>
+            <p id="welcome-message"
+                data-translate="welcome_message"
+                data-name="{{ user_info.name }}"
+                data-age="{{ user_info.age }}"
+                data-gender="{{ user_info.gender }}">
+                Welcome, {{ user_info.name }}! You are {{ user_info.age }} years old and identify as {{ user_info.gender }}.
+            </p>
+        </header>              
         <div class="chat-box" id="chat-box">
             {% for message in chat_history %}
             <div class="{{ 'user-message' if message.role == 'user' else 'bot-message' }}">
@@ -203,7 +207,7 @@
             {% endfor %}
         </div>
         <form id="chat-form" method="post">
-            <input type="text" name="user_input" id="user_input" placeholder="Describe your symptoms..." data-translate>
+            <input type="text" name="user_input" id="user_input" placeholder="Describe your symptoms..." data-translate="Describe your symptoms...">
             <button type="submit">
                 <i class="fa-sharp fa-solid fa-paper-plane"></i>
                 <button type="button" id="mic-button">
@@ -316,38 +320,28 @@
                 console.log("Updated Language:", newLanguage);
             });
         });
-    </script>
 
+            function applyTranslations() {
+                let selectedLang = localStorage.getItem("chatbotLanguage") || "english";
 
-    <script>
-        const translations = {
-            "en": {
-                "Swasthyafy AI Assistant": "Swasthyafy AI Assistant",
-                "Welcome, {{ user_info.name }}! You are {{ user_info.age }} years old and identify as {{ user_info.gender }}.":
-                    "Welcome, {{ user_info.name }}! You are {{ user_info.age }} years old and identify as {{ user_info.gender }}."
-            },
-            "hi": {
-                "Swasthyafy AI Assistant": "स्वास्थ्यफाई एआई सहायक",
-                "Welcome, {{ user_info.name }}! You are {{ user_info.age }} years old and identify as {{ user_info.gender }}.":
-                    "स्वागत है, {{ user_info.name }}! आपकी उम्र {{ user_info.age }} वर्ष है और आप स्वयं को {{ user_info.gender }} के रूप में पहचानते हैं।"
-            }
-        };
+                if (selectedLang !== "english") {
+                    document.querySelectorAll("[data-translate]").forEach(element => {
+                        let key = element.getAttribute("data-translate");
 
-        document.getElementById("language-select").addEventListener("change", function () {
-            let selectedLanguage = this.value;
-            document.querySelectorAll("[data-translate]").forEach(element => {
-                let key = element.getAttribute("data-translate");
-                if (translations[selectedLanguage][key]) {
-                    element.innerHTML = translations[selectedLanguage][key];
+                        if (translations[selectedLang] && translations[selectedLang][key]) {
+                            if (element.tagName === "INPUT" || element.tagName === "TEXTAREA") {
+                                // If it's an input field, update placeholder
+                                element.placeholder = translations[selectedLang][key];
+                            } else {
+                                // Otherwise, update inner text
+                                element.textContent = translations[selectedLang][key];
+                            }
+                        }
+                    });
                 }
-            });
-        });
-
-        document.addEventListener("DOMContentLoaded", function () {
-            console.log("Stored Language:", localStorage.getItem("chatbotLanguage"));
-        });
-
+            }
     </script>
+
     <script src="{{ url_for('static', filename='translate.js') }}" defer></script>
 </body>
 
