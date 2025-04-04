@@ -159,18 +159,15 @@
                 </header>
                     <div class="section">
                 <div class="section-title" data-translate="user_information">User Information</div>
-            <ul class="info-list">
-                <li><strong data-translate="Name":></strong> {{ user_info.name }}</li>
-                <li><strong data-translate="Phone Number"></strong> {{ user_info.number }}</li>
-                <li><strong data-translate="Age":></strong> {{ user_info.age }}</li>
-                <li><strong data-translate="gender":></strong> {{ user_info.gender }}</li>
-            </ul>
+                <ul class="info-list">
+                    <li><strong data-translate="Name"></strong> {{ user_info.name }}</li>
+                    <li><strong data-translate="Phone Number"></strong> {{ user_info.phone_number }}</li>
+                    <li><strong data-translate="Age"></strong> {{ user_info.age }}</li>
+                    <li><strong data-translate="Gender"></strong> {{ user_info.gender }}</li>
+                </ul>                
             </div>
                 <div class="section">
                 <div class="section-title" data-translate="Swasthyafy Report">Swasthyafy Report</div>
-                <div class="disease-list" data-translate="disease-list">
-                    {{ predicted_diseases }}
-                </div>
                 </div>
                 
                 <a href="/" class="return-button" data-translate="return_home">Return to Home</a>
@@ -216,6 +213,10 @@
         document.addEventListener("DOMContentLoaded", function () {
     console.log("Stored Language:", localStorage.getItem("chatbotLanguage"));
 });
+        const currentLang = new URLSearchParams(window.location.search).get("lang") || "english";
+        if (currentLang !== selectedLang) {
+            window.location.href = `/disease-prediction?lang=${selectedLang}`;
+        }
     </script>
     <script src="{{ url_for('static', filename='translate.js') }}" defer></script>
     </body>

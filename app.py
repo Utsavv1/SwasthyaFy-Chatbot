@@ -55,7 +55,6 @@ def chatbot():
     if request.method == "POST":
         user_input = request.form.get("user_input").strip()
 
-        # Translate user input to English if needed
         translated_input = user_input if language == "english" else translate_to_english(user_input, language)
 
         chat_history.append({"role": "user", "content": user_input})
@@ -81,7 +80,6 @@ def chatbot():
 
                 bot_response = clean_response(bot_response)
                 
-                # Translate the final disease prediction if needed
                 if language != "english":
                     bot_response = translate_from_english(bot_response, language)
 
@@ -90,7 +88,6 @@ def chatbot():
         except Exception as e:
             bot_response = f"Sorry, I encountered an error: {str(e)}"
         
-        # Translate chatbot response if needed
         if language != "english":
             bot_response = translate_from_english(bot_response, language)
 
@@ -101,14 +98,14 @@ def chatbot():
 
 def translate_text(text, target_language):
     """Translate text using Google Translate API."""
-    if not text or target_language == "english":  # No translation needed for English
+    if not text or target_language == "english":  
         return text
     try:
         translation = translator.translate(text, dest=target_language)
         return translation.text
     except Exception as e:
         print(f"Translation Error: {e}")
-        return text  # Return original text if translation fails
+        return text 
 
 @app.route("/disease-prediction", methods=["GET"])
 def disease_prediction():
@@ -116,10 +113,8 @@ def disease_prediction():
     user_info = session.get("user_info", {}) 
     user_responses = [msg["content"] for msg in session.get("chat_history", []) if msg["role"] == "user"]
 
-    # Get the language from frontend via request headers (sent by JavaScript)
-    language = request.headers.get("chatbotLanguage", "hindi").lower()
+    language = request.args.get("lang", "english").lower()
 
-    # Translate all report data if language is not English
     if language != "english":
         predicted_diseases = translate_text(predicted_diseases, language)
         user_responses = [translate_text(response, language) for response in user_responses]
@@ -147,14 +142,12 @@ def set_language():
     session["language"] = language
     return jsonify({"success": True, "language": language})
 
-# 🟢 Helper function to clean the response
 def clean_response(response):
     response = response.replace("*", "").replace("_", "")
     response = response.capitalize()
     response = re.sub(r"\*\*(#.*?)\*\*", r"\1", response)
     return response
 
-# 🟢 Helper function to translate text to the user's selected language
 def translate_from_english(text, target_language):
     try:
         return translator.translate(text, dest=target_language).text

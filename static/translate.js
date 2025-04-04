@@ -59,10 +59,31 @@ const translations = {
         "download": "Télécharger le rapport",
         "user_information": "Informations utilisateur",
         "return_home": "Retour à l'accueil"
+},
+    "Gujarati" :{
+        "welcome":"Swastyafy AI માં આપનું સ્વાગત છે",
+        "disclaimer":"આ મૂલ્યાંકન ફક્ત માહિતીના હેતુ માટે છે અને તબીબી નિદાન પૂરું પાડતું નથી. તબીબી કટોકટીના કિસ્સામાં, તાત્કાલિક તમારા સ્થાનિક કટોકટી નંબર પર કૉલ કરો.",
+        "instructions":"આગળ વધતા પહેલા કૃપા કરીને નીચે આપેલ સંક્ષિપ્ત ફોર્મ ભરો. આનાથી તમારા લક્ષણોનું વધુ સચોટ મૂલ્યાંકન શક્ય બનશે. જો તમે આ મૂલ્યાંકન કોઈ બીજા વતી કરી રહ્યા છો, તો કૃપા કરીને તમારી પોતાની માહિતી આપવાને બદલે તેમની માહિતી પ્રદાન કરો.",
+        "Swasthyafy_AI assistant": "Swastyafy એઆઈના સહાયક",
+        "welcome_message":"સ્વાગત છે, {name}! તમે {age} વર્ષના છો અને તમે {gender} તરીકે ઓળખો છો.",
+        "Name": "નામ",
+        "Age": "વય",
+        "gender": "લિંગ",
+        "male": "પુરુષ",
+        "female": "સ્ત્રી",
+        "other": "બીજું",
+        "Submit": "સબમિટ",
+        "Phone Number": "ફોન નંબર",
+        "note": "જ્યારે અમારું ચેટબોટ મદદરૂપ આંતરદૃષ્ટિ અને માર્ગદર્શન પૂરું પાડે છે, તે વ્યાવસાયિક તબીબી સલાહ, નિદાન અથવા સારવારનો વિકલ્પ નથી. કોઈપણ સ્વાસ્થ્ય ચિંતા માટે હંમેશા લાયક આરોગ્ય સંભાળ પ્રદાતાનો સંપર્ક કરો.",
+        "download": "રિપોર્ટ ડાઉનલોડ કરો",
+        "user_information": "વપરાશકર્તા માહિતી",
+        "return_home": "ઘરે પાછા ફરો",
+        "Describe your symptoms...":"તમારા લક્ષણોનું વર્ણન કરો...",
+        "Swasthyafy Report": "સ્વાસ્થ્યયાફી રિપોર્ટ",
+        "User Information": "વપરાશકર્તા માહિતી",
     }
 };
 
-// Function to apply translations to both text content and placeholders
 // Function to apply translations to both text content and placeholders
 function applyTranslations() {
     let selectedLang = localStorage.getItem("chatbotLanguage") || "english";
@@ -107,6 +128,7 @@ document.addEventListener("DOMContentLoaded", applyTranslations);
 // Handle language change event
 document.addEventListener("DOMContentLoaded", function () {
     const languageSelect = document.getElementById("language");
+    
 
     // Get stored language or default to English
     let selectedLanguage = localStorage.getItem("chatbotLanguage") || "english";
