@@ -112,20 +112,28 @@ def disease_prediction():
     predicted_diseases = session.get("predicted_diseases", "No predictions available.")
     user_info = session.get("user_info", {}) 
     user_responses = [msg["content"] for msg in session.get("chat_history", []) if msg["role"] == "user"]
+    lang_map = {
+    "english": "en",
+    "hindi": "hi",
+    "gujarati": "gu",
+    "marathi": "mr",
+    "kannada": "kn"
+    }
 
-    language = request.args.get("lang", "english").lower()
+    selected_language = request.args.get("lang", "english").lower()
+    language_code = lang_map.get(selected_language, "en")
 
-    if language != "english":
-        predicted_diseases = translate_text(predicted_diseases, language)
-        user_responses = [translate_text(response, language) for response in user_responses]
-        user_info = {key: translate_text(str(value), language) for key, value in user_info.items()}
+    if language_code != "english":
+        predicted_diseases = translate_text(predicted_diseases, language_code)
+        user_responses = [translate_text(response, language_code) for response in user_responses]
+        user_info = {key: translate_text(str(value), language_code) for key, value in user_info.items()}
 
     return render_template(
         "disease_prediction.html",
         predicted_diseases=predicted_diseases,
         user_info=user_info,
         user_responses=user_responses,
-        language=language
+        language_code=language_code
     )
 
 @app.route("/clear-chat", methods=["POST"])
