@@ -131,7 +131,7 @@ document.addEventListener("DOMContentLoaded", function () {
     
 
     // Get stored language or default to English
-    let selectedLanguage = localStorage.getItem("chatbotLanguage") || "english";
+    let selectedLang = (localStorage.getItem("chatbotLanguage") || "english").toLowerCase();
     languageSelect.value = selectedLanguage;
 
     // Change language on selection

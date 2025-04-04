@@ -101,7 +101,7 @@ def translate_text(text, target_language):
     if not text or target_language == "english":  
         return text
     try:
-        translation = translator.translate(text, dest=target_language)
+        translation = translator.translate(text, dest=target_language).text
         return translation.text
     except Exception as e:
         print(f"Translation Error: {e}")
