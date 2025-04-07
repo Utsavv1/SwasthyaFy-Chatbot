@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 import google.generativeai as genai
 import re  
 from googletrans import Translator  
-
 import secrets  
 
 genai.configure(api_key="AIzaSyAy00DV8ewg2EAQYjKzMetfHzGE0zky7qg")
@@ -18,11 +17,18 @@ model = genai.GenerativeModel(
     generation_config=generation_config,
 )
 
-
-
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(32)  
 translator = Translator()  
+
+lang_map = {
+    "english": "en",
+    "hindi": "hi",
+    "gujarati": "gu",
+    "marathi": "mr",
+    "kannada": "kn"
+}
+
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -81,7 +87,7 @@ def chatbot():
                 bot_response = clean_response(bot_response)
                 
                 if language != "english":
-                    bot_response = translate_from_english(bot_response, language)
+                    bot_response = translate_text(bot_response, language)
 
                 session["predicted_diseases"] = bot_response
                 return redirect(url_for("disease_prediction"))
@@ -89,44 +95,51 @@ def chatbot():
             bot_response = f"Sorry, I encountered an error: {str(e)}"
         
         if language != "english":
-            bot_response = translate_from_english(bot_response, language)
+            bot_response = translate_text(bot_response, language)
 
         chat_history.append({"role": "model", "content": bot_response})
         session["chat_history"] = chat_history  
 
     return render_template("chatbot.html", user_info=user_info, chat_history=chat_history, language=language)
 
-def translate_text(text, target_language):
-    """Translate text using Google Translate API."""
-    if not text or target_language == "english":  
-        return text
-    try:
-        translation = translator.translate(text, dest=target_language).text
-        return translation.text
-    except Exception as e:
-        print(f"Translation Error: {e}")
-        return text 
+# def translate_text(text, language_name):
+#     if not text or language_name == "english":
+#         return text
+#     try:
+#         lang_map = {
+#             "english": "en",
+#             "hindi": "hi",
+#             "gujarati": "gu",
+#             "marathi": "mr",
+#             "kannada": "kn"
+#         }
+#         language_code = lang_map.get(language_name.lower(), "en")
+#         return translator.translate(text, dest=language_code).text
+#     except Exception as e:
+#         print(f"Translation Error: {e}")
+#         return text
 
 @app.route("/disease-prediction", methods=["GET"])
 def disease_prediction():
     predicted_diseases = session.get("predicted_diseases", "No predictions available.")
-    user_info = session.get("user_info", {}) 
+    user_info = session.get("user_info", {})    
     user_responses = [msg["content"] for msg in session.get("chat_history", []) if msg["role"] == "user"]
-    lang_map = {
-    "english": "en",
-    "hindi": "hi",
-    "gujarati": "gu",
-    "marathi": "mr",
-    "kannada": "kn"
-    }
-
-    selected_language = request.args.get("lang", "english").lower()
+    
+    selected_language = request.args.get("lang", session.get("language", "english")).lower()
+    session["language"] = selected_language  # Update session in case it's new
     language_code = lang_map.get(selected_language, "en")
 
-    if language_code != "english":
-        predicted_diseases = translate_text(predicted_diseases, language_code)
-        user_responses = [translate_text(response, language_code) for response in user_responses]
-        user_info = {key: translate_text(str(value), language_code) for key, value in user_info.items()}
+    if selected_language != "english":
+        if isinstance(predicted_diseases, list):
+            predicted_diseases = [translate_text(disease, selected_language) for disease in predicted_diseases]
+        else:
+            predicted_diseases = translate_text(predicted_diseases, selected_language)
+
+        user_responses = [translate_text(response, selected_language) for response in user_responses]
+
+        user_info = {
+            key: translate_text(str(value), selected_language) for key, value in user_info.items()
+        }
 
     return render_template(
         "disease_prediction.html",
@@ -156,11 +169,15 @@ def clean_response(response):
     response = re.sub(r"\*\*(#.*?)\*\*", r"\1", response)
     return response
 
-def translate_from_english(text, target_language):
+def translate_text(text, target_language_name):
+    if not text or target_language_name == "english":
+        return text
     try:
-        return translator.translate(text, dest=target_language).text
-    except Exception:
-        return text  
+        lang_code = lang_map.get(target_language_name.lower(), "en")
+        return translator.translate(text, dest=lang_code).text
+    except Exception as e:
+        print(f"Translation Error: {e}")
+        return text
 
 if __name__ == "__main__":
     app.run(debug=True)

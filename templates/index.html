@@ -19,8 +19,6 @@
             <select name="language" id="language">
                 <option value="english">English</option>
                 <option value="hindi">Hindi</option>
-                <option value="spanish">Spanish</option>
-                <option value="french">French</option>
                 <option value="Gujarati">Gujarati</option>
                 <option value="Kannada">Kannada</option>
                 <option value="Marathi">Marathi</option>
@@ -47,13 +45,14 @@
             </div>
 
             <div class="input-group">
-                <input type="number" id="age" name="age" min="0" max="130" data-translate="Age" placeholder="Age" required>
+                <input type="number" id="age" name="age" min="0" max="130" data-translate="Age" placeholder="Age"
+                    required>
                 <select id="gender" name="gender" required>
                     <option value="" disabled selected data-translate="gender">Gender</option>
                     <option value="male" data-translate="male">Male</option>
                     <option value="female" data-translate="female">Female</option>
                     <option value="other" data-translate="other">Other</option>
-                </select>   
+                </select>
 
             </div>
 
@@ -66,7 +65,6 @@
             </p>
         </form>
     </div>
-    <script src="{{ url_for('static', filename='translate.js') }}" defer></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const languageSelect = document.getElementById("language");
@@ -126,6 +124,11 @@
                     ageError.style.display = "block";
                 }
             });
+        });
+
+        languageSelect.addEventListener("change", function () {
+            const selectedLang = this.value;
+            document.getElementById("selectedLanguage").value = selectedLang;
         });
 
     </script>
