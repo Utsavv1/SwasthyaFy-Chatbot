@@ -53,7 +53,7 @@ It simulates a realistic diagnostic conversation, predicts probable diseases, an
 
 ---
 
-~## ⚙️ Installation & Setup
+## ⚙️ Installation & Setup
 
 ### 1. Clone the Repository
 
@@ -64,14 +64,62 @@ cd gemini-healthcare-chatbot
 
 ## 2. 🧪 Create & Activate Virtual Environment (Recommended)
 
-
-# For Linux/macOS
+### For Linux/macOS
 ```bash
 python -m venv venv
 source venv/bin/activate
 ```
-# For Windows
+### For Windows
 ```bash
 python -m venv venv
 venv\Scripts\activate~
+```
+
+### 3. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Set Environment Variables
+```bash
+Replace `your_google_gemini_api_key` with your actual Google Gemini API Key.
+GEMINI_API_KEY=your_google_gemini_api_key
+```
+
+### 5. ▶️ Run the Application
+```bash
+python app.py
+```
+
+### 6. 🗂️ Project Structure
+```bash
+gemini-healthcare-chatbot/
+│
+├── templates/              
+│   ├── index.html
+│   ├── chatbot.html
+│   └── disease_prediction.html
+│
+├── static/                  
+│   ├── styles.css
+│   └── translate.js
+│
+├── app.py                  
+└── requirements.txt        
+
+```
+
+## 🔁 App Flow
+```bash
+1.🧍 User Registration
+→ User enters name, age, email, and gender.
+
+2.💬 Symptom Collection
+→ Chatbot interacts with the user to gather symptoms dynamically.
+
+3.🤖 AI Disease Prediction
+→ Gemini API processes symptoms and predicts 3 likely diseases.
+
+4.📋 Result Display
+→ Shows disease description, precautions, medications, and diet plans.
 ```
