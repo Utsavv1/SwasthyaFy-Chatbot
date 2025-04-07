@@ -53,16 +53,25 @@ It simulates a realistic diagnostic conversation, predicts probable diseases, an
 
 ---
 
-## ⚙️ Installation & Setup
+~## ⚙️ Installation & Setup
 
 ### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/your-username/gemini-healthcare-chatbot.git
 cd gemini-healthcare-chatbot
+```
 
-### 2. 🧪 Create & Activate Virtual Environment (Recommended)
+## 2. 🧪 Create & Activate Virtual Environment (Recommended)
 
+
+# For Linux/macOS
 ```bash
 python -m venv venv
 source venv/bin/activate
+```
+# For Windows
+```bash
+python -m venv venv
+venv\Scripts\activate~
+```
