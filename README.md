@@ -125,9 +125,8 @@ gemini-healthcare-chatbot/
 ```
 
 ## 📬 Contact
-```bash
-📧 Email: gutsav449@gmail.com
-
-💻 GitHub: https://github.com/Utsavv1/SwasthyaFy-Chatbot
-
-🔗 LinkedIn: https://www.linkedin.com/in/utsav-gupta
+``bash
+- 📧 Email: [gutsav449@gmail.com](mailto:gutsav449@gmail.com)
+- 💻 GitHub: [Utsavv1/SwasthyaFy-Chatbot](https://github.com/Utsavv1/SwasthyaFy-Chatbot)
+- 🔗 LinkedIn: [Utsav Gupta](https://www.linkedin.com/in/utsav-gupta)
+```
