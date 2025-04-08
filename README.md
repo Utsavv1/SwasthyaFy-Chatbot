@@ -123,3 +123,11 @@ gemini-healthcare-chatbot/
 4.📋 Result Display
 → Shows disease description, precautions, medications, and diet plans.
 ```
+
+## 📬 Contact
+```bash
+📧 Email: gutsav449@gmail.com
+
+💻 GitHub: github.com/Utsavv1
+
+🔗 LinkedIn: linkedin.com/in/utsav-gupta
