@@ -1,6 +1,6 @@
 # 🏥 Gemini Healthcare Chatbot
 
-![Gemini Healthcare Chatbot UI](https://via.placeholder.com/1000x400.png?text=Gemini+Healthcare+Chatbot+UI)
+![Gemini Healthcare Chatbot UI](https://gemini-disease-chatbot.onrender.com/)
 
 The **Gemini Healthcare Chatbot** is an AI-powered web application built with **Python** and **Flask**, integrated with the **Google Gemini API** to identify possible diseases based on user-reported symptoms. This project is ideal for:
 
