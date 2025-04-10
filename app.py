@@ -3,6 +3,12 @@ import google.generativeai as genai
 import re  
 from googletrans import Translator  
 import secrets  
+from pymongo import MongoClient  # 👈 Add this
+
+# 🔌 Connect to MongoDB here
+client = MongoClient("mongodb://localhost:27017/")  
+db = client["healthbot_db"]
+chats_collection = db["chat_conversations"]
 
 genai.configure(api_key="AIzaSyAy00DV8ewg2EAQYjKzMetfHzGE0zky7qg")
 generation_config = {
@@ -129,6 +135,17 @@ def disease_prediction():
     session["language"] = selected_language  # Update session in case it's new
     language_code = lang_map.get(selected_language, "en")
 
+    if not session.get("data_saved", False) and user_info and predicted_diseases:
+        try:
+            chats_collection.insert_one({
+                "user": user_info,
+                "chat_history": session.get("chat_history", []),
+                "prediction": predicted_diseases
+            })
+            session["data_saved"] = True  # ✅ Mark as saved
+        except Exception as e:
+            print("MongoDB Insert Error:", e)
+
     if selected_language != "english":
         if isinstance(predicted_diseases, list):
             predicted_diseases = [translate_text(disease, selected_language) for disease in predicted_diseases]
@@ -178,6 +195,12 @@ def translate_text(text, target_language_name):
     except Exception as e:
         print(f"Translation Error: {e}")
         return text
+    
+@app.route("/view-data")
+def view_data():
+    data = chats_collection.find().sort("_id", -1).limit(1)
+    latest = next(data, {})
+    return jsonify(latest)
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -193,4 +193,7 @@ button:hover {
         font-size: 16px;
         padding: 10px;
     }
+    select{
+        margin-top: 40%;
+    }
 }
